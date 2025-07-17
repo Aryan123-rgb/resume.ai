@@ -1,0 +1,188 @@
+\documentclass[a4paper]{article}
+    \usepackage{enumitem}
+    \usepackage{fullpage}
+    \usepackage{amsmath}
+    \usepackage{amssymb}
+    \usepackage{textcomp}
+    \usepackage{hyperref}
+    % \usepackage[svgnames]{xcolor}
+    \usepackage{xcolor}
+    \usepackage[utf8]{inputenc}
+    \usepackage[T1]{fontenc}
+    \textheight=10in
+    \pagestyle{empty}
+    \raggedright
+    \usepackage[left=0.8in,right=0.8in,bottom=0.8in,top=0.8in]{geometry}
+    \hypersetup{
+        colorlinks=true,
+        linkcolor=blue,
+        urlcolor=blue,
+        breaklinks=true,
+        hidelinks
+    }
+
+    %\renewcommand{\encodingdefault}{cg}
+%\renewcommand{\rmdefault}{lgrcmr}
+
+\def\bull{\vrule height 0.8ex width .7ex depth -.1ex }
+
+% DEFINITIONS FOR RESUME %%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\area} [2] {
+    \vspace*{-9pt}
+    \begin{verse}
+        \textbf{#1}   #2
+    \end{verse}
+}
+
+\newcommand{\lineunder} {
+    \vspace*{-8pt} \\
+    \hspace*{-18pt} \hrulefill \\
+}
+
+\newcommand{\header} [1] {
+    {\hspace*{-18pt}\vspace*{6pt} \textsc{#1}}
+    \vspace*{-6pt} \lineunder
+}
+
+\newcommand{\employer} [3] {
+    { \textbf{#1} (#2)\\ \underline{\textbf{\emph{#3}}}\\  }
+}
+
+\newcommand{\contact} [3] {
+    \vspace*{-10pt}
+    \begin{center}
+        {\Huge \scshape {#1}}\\
+        #2 \\ #3
+    \end{center}
+    \vspace*{-8pt}
+}
+
+\newenvironment{achievements}{
+    \begin{list}
+        {$\bullet$}{\topsep 0pt \itemsep -2pt}}{\vspace*{4pt}
+    \end{list}
+}
+
+\newcommand{\schoolwithcourses} [4] {
+    \textbf{#1} #2 $\bullet$ #3\\
+    #4 \\
+    \vspace*{5pt}
+}
+
+\newcommand{\school} [4] {
+    \textbf{#1} #2 $\bullet$ #3\\
+    #4 \\
+}
+% END RESUME DEFINITIONS %%%%%%%%%%%%%%%%%%%%%%%
+
+    \begin{document}
+\vspace*{-40pt}
+
+    
+
+%==== Profile ====%
+\vspace*{-15pt}
+\begin{center}
+	{\Huge \scshape {vishal maurya}}\\
+	Bhopal, Madhya Pradesh $\cdot$ srivastavaaryanalc76@gmail.com $\cdot$ +91 8955225575 \\
+	\href{https://www.linkedin.com/in/aryan-srivastava-560b91255/}{\color{blue}LinkedIn}   \textbar{} \href{https://github.com/Aryan123-rgb}{\color{blue}GitHub}
+	\textbar{} \href{https://www.codechef.com/users/neat_tiger_70}{\color{blue}CodeChef}
+    \textbar{} \href{https://codeforces.com/profile/narutouzumaki16092003}{\color{blue}Leetcode}
+\end{center}
+
+%==== Education ====%
+\header{Education}
+\textbf{Indian Institute of Information Technology Bhopal}\hfill Bhopal, Madhya Pradesh\\
+B.Tech Electronics and Communication \textit{\textbf{GPA}: 8.62} \hfill Nov 2022 - Jun-2026\\
+\vspace{2mm}
+\textbf{Indian Institute of Information Technology Bhopal}\hfill Bhopal, Madhya Pradesh\\
+B.Tech Electronics and Communication \textit{\textbf{GPA}: 8.62} \hfill Nov 2022 - Jun-2026\\
+\vspace{2mm}
+%=== Experience ===%
+\header{Experience}
+
+ \href{https://drive.google.com/file/d/11zeejmn9jYHZrTlOk4Zbljxd8T7ecB0m/view?usp=sharing}{\textcolor{blue}{PLYPICKER}} {| \sl Full Stack developer Intern} \hfill Oct, 2023 - May, 2024 %ADD START END DATES these are dummy values
+\begin{itemize}
+    \vspace{-1mm}
+    % \item Facilitated to a team of experienced analysts and traders in the area of \textbf{stock market trading} and conducted in-depth analysis of market trends and patterns, created financial models, and utilised statistical tools to provide valuable insights into stock performance
+    \item Designed a face-recognition attendance system using \textbf{WebcamJS} for live image capturing and used \textbf{FaceAPIJS} library for real-time facial comparison with database images achieving \textbf{90\%} accuracy.
+    \vspace{-1mm}
+    % \item Acquired hands-on experience using software tools such as \textbf{Google Data Studio} ,\textbf{Power Bi} ,\textbf{SQL} and \textbf{Excel}
+    \item Implemented a geolocation tracking system for live distance and speed calculations using the \textbf{Google Maps Distance Matrix} API and the JavaScript Geolocator API to enhance accuracy.
+    \item Crafted the website using \textbf{React}, featuring a dashboard for users to view and update their information along with a live tracking map using \textbf{LeafletJS} for real-time location visualization.
+    \vspace{-1mm}
+\end{itemize} 
+\vspace{1mm}
+\textbf{GDSC, IIIT Bhopal} {| \sl Assistant Cloud Developer} \hfill Sep, 2023 - April, 2024 %ADD START END DATES these are dummy values
+\begin{itemize}
+    \vspace{-1mm}
+    \item Deployed the official GDSC website on \textbf{AWS EC2} instance, configuring \textbf{Nginx} as a reverse proxy for efficient traffic management and collaborated with 10 members
+    \vspace{-1mm}
+    \item Conducted more than \textbf{10} sessions on cloud technologies and organized an online \textbf{Google Cloud Labs} event with \textbf{100+} participants to promote cloud adoption.
+\end{itemize} 
+
+%=== Projects ===%
+\header{PROJECTS}
+
+{\textbf{DocuMind}} {| \sl \textbf{Python, Langchain, Streamlit, ChromaDB, GeminiAI }} \hfill \href{https://github.com/Aryan123-rgb/rag-pdf-chat#}{\color{blue}GitHub} 
+\begin{itemize}
+    \vspace{-0.5mm}
+    \item Engineered a \textbf{RAG} based application enabling users to upload multiple PDFs and chat with their content, leveraging Google Gemini 2.0 API to generate vector embeddings for efficient semantic search.
+    \vspace{-1mm}
+    \item Implemented \textbf{ChromaDB} as the vector database, storing and indexing embeddings to facilitate high-speed retrieval of relevant document context for accurate query responses.
+     \vspace{-1mm}
+    \item Designed an interactive interface using \textbf{Streamlit}, integrating \textbf{LangChain} for embedding retrieval and context-aware query processing, ensuring seamless user interaction with document-based knowledge.
+\end{itemize}
+
+{\textbf{CodeX}} {| \sl \textbf{ReactJS, NodeJS, TypeScript, RTK Query, Shadcn UI}} \hfill\href{https://codex-juggernaut.netlify.app}{\color{blue}Live} \hspace{3pt} \href{https://github.com/Aryan123-rgb/codex}{\color{blue}Github}  \\
+\begin{itemize}
+    \vspace{-0.5mm}
+ \item Built an online code compiler supporting Python, Javascript, Java code compilation, along with mini web interface that enables the execution of HTML, CSS, and JavaScript to complile webpages.
+    \item  Devised the backend using \textbf{NodeJS}, leveraging child processes for secure and isolated code execution, an authorization for user management and code storage, with \textbf{MongoDB} for efficient data persistence
+    \vspace{-1mm}
+    \item Developed the front-end using \textbf{React}, integrating \textbf{Redux} for state management and \textbf{RTK Query} for API data fetching and caching, reducing API call latency by \textbf{90\%} and improving data retrieval efficiency
+\end{itemize}
+
+{\textbf{ShareFun}} {| \sl \textbf{ReactJS, NodeJS, ExpressJS, MongoDB, Tailwind}} \hfill \href{https://sharefun-client.vercel.app}{\color{blue}Live} \hspace{3pt} \href{https://github.com/Aryan123-rgb/FullStackSocialMedia}{\color{blue}Github}  \\
+
+\begin{itemize}
+    \vspace{-0.5mm}
+    \item Developed a full-stack social media platform using \textbf{MERN} stack with features including post creation, liking, comments, and secure user authentication with password recovery with help of email and OTP
+    \vspace{-1mm}
+    \item Built the backend with \textbf{NodeJS} and \textbf{ExpressJS}, using \textbf{MongoDB} for data storage and Cloudinary to optimize image storage costs and implementing JWT cookie-based authentication for secure access.
+    \vspace{-1mm}
+    \item Created the frontend using ReactJS and Tailwind CSS, leveraging Redux Toolkit Query for efficient state management and caching, boosting API response time by \textbf{80\%}.
+    % DECREASE THIS BULLET LENGTH FOR PERFECT 100. RIGHT NOW ITS 97
+    
+\end{itemize}
+
+\header{Skills}
+\vspace{1mm}
+\begin{tabular}{@{} l l @{}}
+    \textbf{Languages}:            & C/C++, JavaScript, TypeScript, Python, SQL, Object-Oriented Programming (OOP)  \\[1mm]
+    \textbf{Technologies}:         &ReactJS, NextJS, NodeJS, ExpressJS, Streamlit, Flask, MongoDB, MySQL, ChromaDB \\[1mm]
+    \textbf{Libraries}:            & LangChain, Vector-store, Redux, Redux-toolkit, RTK-Query, Web-Sockets\\[1mm]
+    \textbf{Platforms}:            & Git, Github, Gitbash, Visual Studio Code, Postman, Vercel \\
+\end{tabular}
+
+
+
+
+\vspace{2mm}
+\vspace{1mm}
+
+\header{ACHIEVEMENTS}
+\begin{itemize}[leftmargin=*, itemsep=0pt, topsep=0pt] % Reduces vertical spacing
+    \item \textbf{3-star} on \href{https://www.codechef.com/users/neat_tiger_70}{\textcolor{blue}{CodeChef}} \textbf{(max rating – 1659)}
+    \item \textbf{Pupil} on \href{https://codeforces.com/profile/narutouzumaki16092003}{\textcolor{blue}{Codeforces}} \textbf{(max rating – 1340)}
+    \item \href{https://leetcode.com/u/srivastavaaryanalc76/}{\textcolor{blue}{Leetcode}} \textbf{max rating 1849} with a global rank of \textbf{436} in weekly contest 419 made under \textbf{10\%} globally
+     \item Solved more than 1000 problems on Leetcode, codechef, codeforces combined
+    \item Teaching Assistant for Database Management System (DBMS) at IIIT BHOPAL
+\end{itemize}
+
+
+ %=== POR ===%
+
+
+\end{document}
