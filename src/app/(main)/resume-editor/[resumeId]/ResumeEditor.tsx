@@ -1,46 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { Eye, FileText, Send, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Resume } from "@/generated/prisma";
+import { Chat, Resume } from "@/generated/prisma";
 import { useToast } from "@/lib/useToast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { generateLatexCode } from "@/app/action";
+import { useRouter } from "next/navigation";
 
-type Message = {
-  id: number;
-  content: string;
-  isUser: boolean;
-  timestamp: Date;
+export type FullResume = Resume & {
+  chat: Chat[];
 };
 
-export default function ResumeEditor(resume: Resume) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      content:
-        "Hi there! I'm here to help you build your resume. What would you like to add first?",
-      isUser: false,
-      timestamp: new Date(Date.now() - 3600000),
-    },
-    {
-      id: 2,
-      content:
-        "I can help you with work experience, education, skills, and more. Just let me know!",
-      isUser: false,
-      timestamp: new Date(Date.now() - 1800000),
-    },
-  ]);
+export default function ResumeEditor(resume: FullResume) {
+  const [messages, setMessages] = useState<Chat[]>(resume.chat);
   const [pdfUrl, setPdfUrl] = useState("");
   const [query, setQuery] = useState("");
   const [compilingPDF, setCompilingPDF] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [latexCode, setLatexCode] = useState(resume.latex_code);
   const { showError, showInfo } = useToast();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const handleSend = async () => {
     setIsSending(true);
@@ -48,11 +33,14 @@ export default function ResumeEditor(resume: Resume) {
       showInfo("Please Enter a valid input");
       return;
     }
-    const res = await generateLatexCode(query, resume.id);
-    console.log("ai response", res);
+    const res = await generateLatexCode(query, resume.id, latexCode);
     if (res.success && res?.data) {
-      console.log("compiling pdf.....");
       setLatexCode(res.data);
+
+      startTransition(() => {
+        router.refresh();
+      });
+
       await handleCompile(res.data);
     } else {
       showError("Error generating AI response. Please try again");
@@ -121,20 +109,20 @@ export default function ResumeEditor(resume: Resume) {
                 key={message.id}
                 className={cn(
                   "flex",
-                  message.isUser ? "justify-end" : "justify-start"
+                  message.role === "Human" ? "justify-end" : "justify-start"
                 )}
               >
                 <div
                   className={cn(
                     "max-w-[80%] rounded-lg px-4 py-2",
-                    message.isUser
+                    message.role === "Human"
                       ? "bg-blue-500 text-white rounded-br-none"
                       : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-bl-none"
                   )}
                 >
                   <p className="whitespace-pre-wrap">{message.content}</p>
                   <p className="text-xs opacity-70 mt-1">
-                    {message.timestamp.toLocaleTimeString([], {
+                    {message.createdAt.toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}

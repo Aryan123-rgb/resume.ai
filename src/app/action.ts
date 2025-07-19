@@ -7,6 +7,7 @@ import { projectSchema } from "@/lib/zodSchemaTypes";
 import prismaClient from "@/lib/db";
 import { generatePDF } from "@/lib/latex";
 import { getAIResponse } from "@/lib/ai";
+import { revalidatePath } from "next/cache";
 
 export async function createNewProject(data: z.infer<typeof projectSchema>) {
     try {
@@ -22,7 +23,21 @@ export async function createNewProject(data: z.infer<typeof projectSchema>) {
                 name: validatedData.name,
                 description: validatedData.description,
                 latex_code,
-                userId
+                userId,
+                chat: {
+                    createMany: {
+                        data: [
+                            {
+                                content: "Hi there! I'm here to help you build your resume. What would you like to add first?",
+                                role: 'Bot'
+                            },
+                            {
+                                content: "I can help you with work experience, education, skills, and more. Just let me know!",
+                                role: "Bot"
+                            }
+                        ]
+                    }
+                }
             }
         });
 
@@ -33,22 +48,38 @@ export async function createNewProject(data: z.infer<typeof projectSchema>) {
     }
 }
 
-export async function generateLatexCode(query: string, resumeId: string) {
+export async function generateLatexCode(query: string, resumeId: string, latex_code: string) {
     try {
-        const latex_code = await getAIResponse(query);
+        const updated_latex_code = await getAIResponse(query, latex_code);
 
-        console.log("code", latex_code);
+        await prismaClient.$transaction(async (tx) => {
+            await tx.resume.update({
+                where: {
+                    id: resumeId
+                },
+                data: {
+                    latex_code: updated_latex_code
+                }
+            });
 
-        await prismaClient.resume.update({
-            where: {
-                id: resumeId
-            },
-            data: {
-                latex_code: latex_code
-            }
+            await tx.chat.createMany({
+                data: [
+                    {
+                        resumeId: resumeId,
+                        content: query,
+                        role: 'Human',
+                    },
+                    {
+                        resumeId: resumeId,
+                        content: "The changes were made successfully",
+                        role: 'Bot',
+                    }
+                ]
+            });
         });
 
-        return { success: true, data: latex_code };
+        revalidatePath(`/resume-editor/${resumeId}`);
+        return { success: true, data: updated_latex_code };
     } catch (error) {
         console.error('Error generating latex code', error);
         return { success: false, error: error };

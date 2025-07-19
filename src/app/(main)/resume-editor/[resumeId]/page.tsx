@@ -11,6 +11,9 @@ export default async function Page({ params }: { params: Params }) {
     where: {
       id: resumeId,
     },
+    include: {
+      chat: true,
+    },
   });
 
   if (!resume) {
