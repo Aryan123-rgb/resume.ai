@@ -1,101 +1,85 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { Eye, FileText, Send, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import axios from "axios";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Chat, Resume } from "@/generated/prisma";
 import { useToast } from "@/lib/useToast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { generateLatexCode } from "@/app/action";
-import { useRouter } from "next/navigation";
+import { Textarea } from "@/components/ui/textarea";
+import { useCompilePdf, useGenerateLatex, useResume } from "./use-resume";
 
-export type FullResume = Resume & {
-  chat: Chat[];
-};
+export default function ResumeEditor({ resumeId }: { resumeId: string }) {
+  const { data: resume, isLoading, isError, error } = useResume(resumeId);
+  const { mutateAsync: generateLatexCode, isPending } =
+    useGenerateLatex(resumeId);
+  const { mutateAsync: compilePdf, isPending: isCompiling } = useCompilePdf();
 
-export default function ResumeEditor(resume: FullResume) {
-  const [messages, setMessages] = useState<Chat[]>(resume.chat);
   const [pdfUrl, setPdfUrl] = useState("");
   const [query, setQuery] = useState("");
-  const [compilingPDF, setCompilingPDF] = useState(false);
-  const [isSending, setIsSending] = useState(false);
-  const [latexCode, setLatexCode] = useState(resume.latex_code);
   const { showError, showInfo } = useToast();
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+
+  const messages = resume?.chat;
+  const latexCode = resume?.latex_code;
 
   const handleSend = async () => {
-    setIsSending(true);
-    if (!query.trim()) {
+    if (!query.trim() || !latexCode) {
       showInfo("Please Enter a valid input");
       return;
     }
-    const res = await generateLatexCode(query, resume.id, latexCode);
-    if (res.success && res?.data) {
-      setLatexCode(res.data);
 
-      startTransition(() => {
-        router.refresh();
+    try {
+      // Use the mutation
+      const result = await generateLatexCode({
+        queryText: query,
+        latexCode: latexCode,
       });
 
-      await handleCompile(res.data);
-    } else {
-      showError("Error generating AI response. Please try again");
+      if (result.success && result?.data) {
+        await handleCompile(result.data);
+      }
+    } catch (e) {
+      console.log("Error", e);
     }
+
     setQuery("");
-    setIsSending(false);
   };
 
   const handleCompile = async (latexCodeToCompile?: string) => {
-    setCompilingPDF(true);
-
     const codeToCompile = latexCodeToCompile || latexCode;
 
+    if (!codeToCompile) {
+      return;
+    }
+
     try {
-      const res = await axios.post(
-        `/api/compile-resume`,
-        { latex_code: codeToCompile },
-        { responseType: "blob" }
-      );
+      const pdfBlob = await compilePdf(codeToCompile);
 
-      const contentType = res.headers["content-type"];
-      if (contentType !== "application/pdf") {
-        throw new Error("Invalid content type");
+      if (pdfUrl) {
+        window.URL.revokeObjectURL(pdfUrl);
       }
 
-      if (res.data.size === 0) {
-        throw new Error("Empty PDF blob");
-      }
-
-      const arrayBuffer = await res.data.arrayBuffer();
-      const uint8Array = new Uint8Array(arrayBuffer);
-
-      const pdfHeader = String.fromCharCode(...uint8Array.slice(0, 4));
-
-      if (pdfHeader !== "%PDF") {
-        // The response might be an error JSON instead of PDF
-        const text = new TextDecoder().decode(uint8Array);
-        console.error("Non-PDF response:", text);
-        throw new Error("Invalid PDF received");
-      }
-
-      const blob = new Blob([res.data], { type: "application/pdf" });
-      const url = window.URL.createObjectURL(blob);
+      const url = window.URL.createObjectURL(pdfBlob);
       setPdfUrl(url);
-    } catch (err: any) {
-      console.error("Error during PDF compilation:", err);
+    } catch (err) {
       showError("Compilation Error");
-    } finally {
-      setCompilingPDF(false);
     }
   };
 
+  // fire off use compile on first mount
   useEffect(() => {
-    handleCompile();
-  }, []);
+    if (latexCode) {
+      handleCompile(latexCode);
+    }
+  }, [latexCode]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError || !resume) {
+    return <div>Error loading resume... {error?.message}</div>;
+  }
 
   return (
     <main className="flex h-[calc(100vh-4rem)]">
@@ -104,44 +88,52 @@ export default function ResumeEditor(resume: FullResume) {
         <div className="flex flex-col h-full">
           {/* Messages container */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={cn(
-                  "flex",
-                  message.role === "Human" ? "justify-end" : "justify-start"
-                )}
-              >
+            {messages &&
+              messages.map((message) => (
                 <div
+                  key={message.id}
                   className={cn(
-                    "max-w-[80%] rounded-lg px-4 py-2",
-                    message.role === "Human"
-                      ? "bg-blue-500 text-white rounded-br-none"
-                      : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-bl-none"
+                    "flex",
+                    message.role === "Human" ? "justify-end" : "justify-start"
                   )}
                 >
-                  <p className="whitespace-pre-wrap">{message.content}</p>
-                  <p className="text-xs opacity-70 mt-1">
-                    {message.createdAt.toLocaleTimeString([], {
+                  <div
+                    className={cn(
+                      "max-w-[80%] rounded-lg px-4 py-2",
+                      message.role === "Human"
+                        ? "bg-blue-500 text-white rounded-br-none"
+                        : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-bl-none"
+                    )}
+                  >
+                    <p className="whitespace-pre-wrap">{message.content}</p>
+                    <p className="text-xs opacity-70 mt-1">
+                      {/* {message.createdAt.toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
-                    })}
-                  </p>
+                    })} */}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
 
           {/* Input area */}
           <div className="border-t border-gray-200 dark:border-gray-700 p-4">
             <div className="flex items-center space-x-2">
-              <Input value={query} onChange={(e) => setQuery(e.target.value)} />
+              <Textarea
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
               <Button
                 onClick={handleSend}
-                disabled={!query.trim()}
-                className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                disabled={!query.trim() || isPending}
+                className={cn(
+                  "p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+                  (!query.trim() || isPending) &&
+                    "pointer-events-none opacity-75"
+                )}
               >
-                {isSending ? (
+                {isPending ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <Send className="w-5 h-5" />
@@ -170,11 +162,14 @@ export default function ResumeEditor(resume: FullResume) {
                 </div>
               </div>
               <Button
-                disabled={compilingPDF}
+                disabled={isCompiling}
                 onClick={() => handleCompile()}
-                className="gap-2"
+                className={cn(
+                  "gap-2",
+                  isCompiling ?? "pointer-events-none opacity-75"
+                )}
               >
-                {compilingPDF ? (
+                {isCompiling ? (
                   <>
                     <Loader2 className="animate-spin" />
                     Compiling...
@@ -191,7 +186,7 @@ export default function ResumeEditor(resume: FullResume) {
             {/* Preview Content */}
             <div className="flex-1 overflow-auto">
               <div className="h-full w-full p-6">
-                {compilingPDF ? (
+                {isCompiling ? (
                   <div className="h-full flex flex-col items-center justify-center space-y-4">
                     <Loader2 className="h-12 w-12 animate-spin text-primary" />
                     <div className="space-y-2 text-center">

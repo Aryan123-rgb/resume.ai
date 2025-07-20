@@ -17,21 +17,21 @@ datasource db {
 // will be using clerk for storing user's data
 
 model Resume {
-  id          String   @id @default(uuid())
+  id          String     @id @default(uuid())
   userId      String
   latex_code  String
   name        String
   description String
   chat        Chat[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }
 
 model Chat {
   id        String   @id @default(uuid())
   resumeId  String
-  resume    Resume    @relation(references: [id], fields: [resumeId])
-  role      Role 
+  resume    Resume   @relation(references: [id], fields: [resumeId])
+  role      Role
   content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

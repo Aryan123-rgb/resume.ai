@@ -7,10 +7,11 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Eye, User, Briefcase, GraduationCap } from "lucide-react";
-import UserResumes from "@/components/UserResumes";
-import { UserResume } from "@/lib/types";
+import { Eye, User, Briefcase, GraduationCap } from "lucide-react";
+import UserResumes from "@/app/(main)/resume-builder/UserResumes";
 import CreateNewProjectButton from "@/components/CreateNewProjectButton";
+import prismaClient from "@/lib/db";
+import { auth } from "@clerk/nextjs/server";
 
 const resumeTemplates = [
   {
@@ -74,33 +75,6 @@ const resumeTemplates = [
   },
 ];
 
-const userResumes: UserResume[] = [
-  {
-    id: "1",
-    name: "Software Engineer Resume",
-    template: "Tech Specialist",
-    lastModified: "2024-01-15",
-    status: "Complete",
-    preview: "/api/placeholder/300/400",
-  },
-  {
-    id: "2",
-    name: "Marketing Manager CV",
-    template: "Modern Professional",
-    lastModified: "2024-01-12",
-    status: "Draft",
-    preview: "/api/placeholder/300/400",
-  },
-  {
-    id: "3",
-    name: "UX Designer Portfolio",
-    template: "Creative Designer",
-    lastModified: "2024-01-10",
-    status: "Complete",
-    preview: "/api/placeholder/300/400",
-  },
-];
-
 const categoryColors = {
   Professional:
     "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
@@ -116,6 +90,18 @@ const categoryColors = {
 };
 
 export default async function ResumeBuilder() {
+  const { userId } = await auth();
+
+  if (!userId) {
+    throw new Error("Unauthenticated request");
+  }
+
+  const resume = await prismaClient.resume.findMany({
+    where: {
+      userId,
+    },
+  });
+
   return (
     <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Pre-defined Templates Section */}
@@ -129,7 +115,6 @@ export default async function ResumeBuilder() {
             </p>
           </div>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {resumeTemplates.map((template) => (
             <Card
@@ -218,7 +203,7 @@ export default async function ResumeBuilder() {
       </section>
 
       {/* User Created Resumes Section */}
-      <UserResumes userResumes={userResumes} />
+      <UserResumes userResumes={resume} />
     </main>
   );
 }

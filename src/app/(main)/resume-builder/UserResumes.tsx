@@ -1,4 +1,3 @@
-import { UserResume } from "@/lib/types";
 import {
   Card,
   CardContent,
@@ -9,18 +8,17 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   FileText,
-  Plus,
-  Eye,
   Edit,
-  Download,
   Calendar,
   User,
   Briefcase,
   GraduationCap,
 } from "lucide-react";
+import { Resume } from "@/generated/prisma";
+import Link from "next/link";
 
 interface UserResumesProps {
-  userResumes: UserResume[];
+  userResumes: Resume[];
 }
 
 export default function UserResumes({ userResumes }: UserResumesProps) {
@@ -78,26 +76,22 @@ export default function UserResumes({ userResumes }: UserResumesProps) {
                 <div className="mb-3">
                   <CardTitle className="text-lg mb-1">{resume.name}</CardTitle>
                   <p className="text-sm text-muted-foreground">
-                    Template: {resume.template}
+                    Description: {resume.description}
                   </p>
                 </div>
 
                 <div className="flex items-center text-xs text-muted-foreground mb-4">
                   <Calendar className="h-3 w-3 mr-1" />
                   Last modified:{" "}
-                  {new Date(resume.lastModified).toLocaleDateString()}
+                  {new Date(resume.updatedAt).toLocaleDateString()}
                 </div>
 
                 <div className="flex gap-2">
-                  <Button size="sm" className="flex-1">
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit
-                  </Button>
-                  <Button size="sm" variant="outline">
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                  <Button size="sm" variant="outline">
-                    <Download className="h-4 w-4" />
+                  <Button asChild size="sm" className="flex-1">
+                    <Link href={`/resume-editor/${resume.id}`}>
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit
+                    </Link>
                   </Button>
                 </div>
               </CardContent>
