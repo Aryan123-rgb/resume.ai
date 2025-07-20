@@ -189,6 +189,70 @@ export const getAIResponse = async (instructions: string, latex_template: string
     - Include degree type, major, institution name
     - Add graduation date, GPA (if requested/beneficial)
     - Include relevant coursework, honors, or activities if space allows
+
+    **CAPITALIZATION & FORMATTING RULES:**
+    - **Location Names:** Automatically capitalize proper nouns in locations
+      * "madhya pradesh" → "Madhya Pradesh"
+      * "new york" → "New York" 
+    - **Names:** Capitalize all parts of personal names
+      * "john smith" → "John Smith"
+      * "mary jane watson" → "Mary Jane Watson"
+    - **Company Names:** Use proper capitalization for well-known companies
+      * "google" → "Google"
+      * "amazon web services" → "Amazon Web Services"
+    - **Job Titles:** Use title case for professional positions
+      * "software engineer" → "Software Engineer"
+      * "data scientist" → "Data Scientist"
+    - **Education:** Capitalize degrees and institution names properly
+      * "bachelor of science" → "Bachelor of Science"
+      * "master of computer applications" → "Master of Computer Applications"
+    
+    **PHONE NUMBER FORMATTING:**
+    - **Numbers:** For 10-digit numbers, automatically add +91 country code
+      * "1234567890" → "+91 1234567890"
+      * "9876543210" → "+91 9876543210"
+    
+    **TECHNOLOGY & SKILLS FORMATTING:**
+    - **Bold Important Technologies:** In work experience and project descriptions, make technology names bold
+      * "Developed using React and Node.js" → "Developed using \\textbf{React} and \\textbf{Node.js}"
+      * "Built with Python, Django, and PostgreSQL" → "Built with \\textbf{Python}, \\textbf{Django}, and \\textbf{PostgreSQL}"
+      * "Implemented machine learning models using TensorFlow" → "Implemented machine learning models using \\textbf{TensorFlow}"
+    - **Framework & Library Names:** Maintain proper capitalization
+      * "react" → "React", "angular" → "Angular", "vue.js" → "Vue.js"
+      * "tensorflow" → "TensorFlow", "pytorch" → "PyTorch"
+      * "mongodb" → "MongoDB", "postgresql" → "PostgreSQL"
+      * 
+    **For Experience Bullet Points:**
+    - Write 2-4 concise, achievement-focused bullet points
+    - Start with strong action verbs (Led, Developed, Implemented, Optimized, etc.)
+    - Include quantifiable results when possible (percentages, numbers, metrics)
+    - **Bold all technology names, programming languages, frameworks, and tools**
+    - Tailor to the role/industry mentioned
+    - Keep each bullet point to 1-2 lines in typical resume formatting
+    - Examples:
+      * "Developed scalable web applications using \\textbf{React}, \\textbf{Node.js}, and \\textbf{MongoDB}, serving 10,000+ daily users"
+      * "Implemented CI/CD pipelines using \\textbf{Docker}, \\textbf{Jenkins}, and \\textbf{AWS}, reducing deployment time by 60\\%"
+      * "Led a team of 5 engineers to migrate legacy systems to \\textbf{microservices architecture} using \\textbf{Spring Boot} and \\textbf{Kubernetes}"
+    
+
+    **LINE LENGTH OPTIMIZATION:**
+    - **Target Complete Lines:** Aim to generate content that fills complete lines rather than ending mid-line
+    - **Typical LaTeX Resume Line Capacity:** Approximately 80-100 characters per line (including spaces)
+    - **Bullet Point Length Guidelines:** 
+    * Short bullet: 60-80 characters (fits one line completely)
+    * Medium bullet: 120-160 characters (fits two lines completely)
+    * Avoid: 90-110 character bullets that create awkward 1.5-line wrapping
+    - **Content Adjustment Strategies:**
+    * Add specific metrics or details to reach full line completion
+    * Use slightly longer synonyms or additional descriptive words
+    * Include relevant technical details or context
+    * Combine related achievements into a single, complete-line bullet
+    - **Examples:**
+    * Instead of: "Built web app using React" (incomplete line)
+    * Better: "Built responsive web application using React, Node.js, and MongoDB with user authentication" (complete line)
+    * Instead of: "Improved system performance significantly through optimization techniques" (1.5 lines)
+    * Better: "Improved system performance by 40% through database optimization and caching implementation using Redis" (2 complete lines)
+    - **Flexibility Note:** This is a preferred formatting guideline, not a strict requirement. Prioritize content quality and accuracy over line completion.
     
     🎯 SECTION DETECTION PATTERNS:
     

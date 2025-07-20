@@ -12,6 +12,7 @@ import UserResumes from "@/app/(main)/resume-builder/UserResumes";
 import CreateNewProjectButton from "@/components/CreateNewProjectButton";
 import prismaClient from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
+import { ResumePreview } from "./ResumePreview";
 
 const resumeTemplates = [
   {
@@ -153,13 +154,7 @@ export default async function ResumeBuilder() {
 
                   {/* Hover overlay */}
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <Button
-                      size="sm"
-                      className="bg-white text-black hover:bg-gray-100"
-                    >
-                      <Eye className="h-4 w-4 mr-2" />
-                      Preview
-                    </Button>
+                    <ResumePreview templateId={template.category} />
                   </div>
                 </div>
               </CardHeader>
