@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2, Plus } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../../../components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -10,14 +10,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
+} from "../../../components/ui/dialog";
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
 import { useState } from "react";
 import { createNewProject } from "@/app/action";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-export default function CreateNewProjectButton() {
+interface CreateNewProjectButtonProps {
+  resumeType: string;
+}
+
+export default function CreateNewProjectButton({
+  resumeType,
+}: CreateNewProjectButtonProps) {
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
@@ -33,6 +39,7 @@ export default function CreateNewProjectButton() {
       const res = await createNewProject({
         name: projectName,
         description,
+        resumeType,
       });
       if (!res.success) {
         setLoading(false);

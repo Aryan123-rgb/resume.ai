@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Eye, User, Briefcase, GraduationCap } from "lucide-react";
 import UserResumes from "@/app/(main)/resume-builder/UserResumes";
-import CreateNewProjectButton from "@/components/CreateNewProjectButton";
+import CreateNewProjectButton from "./CreateNewProjectButton";
 import prismaClient from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { ResumePreview } from "./ResumePreview";
@@ -190,7 +190,7 @@ export default async function ResumeBuilder() {
                   ))}
                 </div>
 
-                <CreateNewProjectButton />
+                <CreateNewProjectButton resumeType={template.category} />
               </CardContent>
             </Card>
           ))}

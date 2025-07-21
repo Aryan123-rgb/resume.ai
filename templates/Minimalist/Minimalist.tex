@@ -1,0 +1,271 @@
+%-------------------------
+% Resume in Latex
+% Author : Jake Gutierrez
+% Based off of: https://github.com/sb2nov/resume
+% License : MIT
+%------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+
+
+%----------FONT OPTIONS----------
+% sans-serif
+% \usepackage[sfdefault]{FiraSans}
+% \usepackage[sfdefault]{roboto}
+% \usepackage[sfdefault]{noto-sans}
+% \usepackage[default]{sourcesanspro}
+
+% serif
+% \usepackage{CormorantGaramond}
+% \usepackage{charter}
+
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Ensure that generate pdf is machine readable/ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textit{\small#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+%----------HEADING----------
+% \begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
+%   \textbf{\href{http://sourabhbajaj.com/}{\Large Sourabh Bajaj}} & Email : \href{mailto:sourabh@sourabhbajaj.com}{sourabh@sourabhbajaj.com}\\
+%   \href{http://sourabhbajaj.com/}{http://www.sourabhbajaj.com} & Mobile : +1-123-456-7890 \\
+% \end{tabular*}
+
+
+
+
+\begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
+  \textbf{{\LARGE Nikhil Ranjan}}
+\vspace{0.5em}
+
+  \\
+  \href{https://www.linkedin.com/in/nikhil-ranjan-tnp/}{LinkedIn: https://www.linkedin.com/in/nikhil-ranjan-tnp/} & Email: \href{mailto:nikhilranjan1103@gmail.com }{nikhilranjan1103@gmail.com } \\
+  \href{https://github.com/then00bprogrammer}{Github: https://github.com/then00bprogrammer} & Mobile:~~~+91-8318285086  \\
+\end{tabular*}
+
+%-----------EDUCATION-----------
+\section{Education}
+\resumeSubHeadingListStart
+\resumeSubheading
+{Indian Institute of Information Technology, Lucknow}{Lucknow, India}
+{Bachelor of Technology in Computer Science; CGPA: 8.05/10}{Dec. 2021 -- Present}
+\resumeItemListStart
+\resumeItem{Relevant Coursework}{\textit{Data Structures and Algorithms, OOPS, DBMS, Operating System}}
+\resumeItemListEnd
+\resumeSubHeadingListEnd
+
+\section{Technical Skills}
+    \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Languages}{: C/C++, Javascript, Typescript, Python} \\
+     \textbf{Frameworks}{: Next.js, React.js, Node.js, Express.js ,Flask, Discord.js,  Chakra UI} \\
+     \textbf{Tools}{: Git, MongoDB, Mongoose, Neo4j (Graph Database), Firebase, Apace Lucene, SocketIO, JWTs, Manifest V3, Vercel, PythonAnywhere, Google Colab, Windows} \\
+    }}
+    \end{itemize}
+
+
+ 
+\section{Projects}
+    \resumeSubHeadingListStart
+
+        \resumeProjectHeading
+        {\href{https://github.com/SahilSingh177/Interestify}{\textbf{Interestify}}}
+        {\emph{Next.js, TypeScript, Flask, Neo4j, Scikit-Learn, Apache Lucene, Redis, Chakra UI}}
+        \resumeItemListStart
+        \resumeItem{Developed an innovative research paper recommendation system based on user interests}
+        \resumeItem{Implemented efficient data scraping from prominent sources like Springer}
+        \resumeItem{Utilized machine learning techniques (Scikit-Learn) for article recommendations}
+        \resumeItem{Implemented Apache Lucene for full-text search functionality}
+        \resumeItem{Enabled bookmarking, liking, and article tracking features for users}
+        \resumeItem{Provided regular email updates to keep users informed and engaged}
+        \resumeItem{Utilized Graph Database (Neo4j) for managing complex relationships}
+        \resumeItem{Implemented Redis caching for optimized performance}
+        \resumeItemListEnd
+      
+        \resumeProjectHeading
+        {\href{https://github.com/then00bprogrammer/GPT-Cat}{\textbf{GPT Cat}}}
+        {\emph{Manifest V3, React.js, Typescript, Node.js, Express.js, MongoDB, Mongoose, Chakra UI}}
+        \resumeItemListStart
+        \resumeItem{This web extension organizes, saves, and shares customizable prompts.}
+        \resumeItem{See most liked prompts, select writing styles and browse prompts by category on Chat GPT's website itself.}
+        \resumeItem{Bookmark your Chat GPT conversation on Chat GPT's website itself.}
+        \resumeItem{Like a public prompt or favourite them to add them to your own collection.}
+        \resumeItem{Make a new prompt and organize it using nested folders in an infinitely customizable way.}
+        \resumeItemListEnd
+        \resumeProjectHeading
+        {\href{https://github.com/SahilSingh177/BotX}{\textbf{BotX}}}
+        {\emph{Discord.js, React.js, Node.js, Express.js, MongoDB, Mongoose}}
+        \resumeItemListStart
+        \resumeItem{This website enables users to create and deploy custom bots for their discord server, granting them the flexibility to combine various commands as desired.}
+        \resumeItem{Used Discord.js for implementing various bot commands}
+        \resumeItem{Managed the database using MongoDB and Mongoose}
+        \resumeItemListEnd
+        
+    \resumeSubHeadingListEnd
+
+   
+
+%--------Achievements-------
+\section{Achievements}
+\begin{itemize}[leftmargin=0.15in, label={}]
+    \resumeItemListStart
+       \resumeItem
+          {\textbf {Specialist} @ Codeforces},{\href{https://codeforces.com/profile/then00bprogrammer}{\underline{Nikhil Ranjan, Codeforces}}}
+          
+       \resumeItem
+          {\textbf {4*} @ Codechef}{\href{https://www.codechef.com/users/the_way_i_am}{\underline{Nikhil Ranjan, Codechef}}}
+          
+       \resumeItem
+          {\textbf {700+} problems, \textbf{Knight(2094 Contest Rating)} @ Leetcode }{\href{https://leetcode.com/then00bprogrammer/}{\underline{Nikhil Ranjan, Leetcode}}}
+          
+        \resumeItem
+          {\textbf{Global rank 227} in Codeforces Round 867 (Div 3)}
+          {\href{https://codeforces.com/contest/1822/standings/page/2}{\underline{Contest ranklist}}}
+        \resumeItem
+          {\textbf{Global rank 202} in Codechef Starters 87 (Div 2)}
+          {\href{https://www.codechef.com/rankings/START87B?itemsPerPage=100&order=asc&page=3&sortBy=rank}{\underline{Contest ranklist}}}
+        
+        \resumeItem
+          { \textbf{Global rank 89 (AIR 7)} out of 22K participants in Leetcode Biweekly 105}{\href{https://leetcode.com/contest/biweekly-contest-105/ranking/4/}
+          {\underline{Contest ranklist}}}
+
+       \resumeItem
+          { \textbf{Global rank 416} out of 32K participants in Leetcode Weekly 348}{\href{https://leetcode.com/contest/weekly-contest-348/ranking/17/}
+          {\underline{Contest ranklist}}}
+
+        \resumeItem
+          { \textbf{Global rank 823} out of 21K participants in Leetcode Biweekly 99}{\href{https://leetcode.com/contest/biweekly-contest-99/ranking/33/}{\underline{Contest ranklist}}}
+          
+        \resumeItem
+          { \textbf{Google Hashcode 2022} : Global Rank 2365}
+        
+    \resumeItemListEnd
+    \end{itemize}
+    
+    %-----------PROJECTS-----------
+    
+
+\section{Certifications}
+\begin{itemize}[leftmargin=0.15in, label={}]
+    \resumeItemListStart
+        \resumeItem{\textbf{Bitcoin for Developers}}{\href{https://learn.saylor.org/pluginfile.php/1/tool_certificate/issues/1675108213/4445914663NR.pdf}{Link to Certification}}
+        
+        \resumeItem{\textbf{Bitcoin for Everybody}}{\href{https://learn.saylor.org/pluginfile.php/1/tool_certificate/issues/1675106020/4395309962NR.pdf}{Link to Certification}}
+        
+        \resumeItem{\textbf{Flutter Development}}{\href{https://www.udemy.com/certificate/UC-1910c6da-1259-4e27-ab91-40eb16aa98e8/}{Link to Certification}}
+        
+        \resumeItem{\textbf{Certified Google Cloud Practitioner}}
+        
+        \resumeItem{\textbf{Open Source Contributor @Hacktoberfest 2022}}
+    \resumeItemListEnd
+\end{itemize}
+
+
+      
+% -----------Multiple Positions Heading-----------
+%    \resumeSubSubheading
+%     {Software Engineer I}{Oct 2014 - Sep 2016}
+%     \resumeItemListStart
+%        \resumeItem{Apache Beam}
+%          {Apache Beam is a unified model for defining both batch and streaming data-parallel processing pipelines}
+%     \resumeItemListEnd
+%    \resumeSubHeadingListEnd
+%-------------------------------------------
+
+    
+
+  \resumeSubHeadingListEnd
+
+
+
+
+
+% hi
+
+%-----------PROGRAMMING SKILLS-----------
+
+
+
+%
+%-------------------------------------------
+\end{document}

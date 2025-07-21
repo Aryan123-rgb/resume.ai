@@ -1,19 +1,25 @@
 'use server';
+
 import path from "path";
 import fs from 'fs/promises'
 import { requireUser } from "@/lib/hooks";
 import { z } from 'zod';
-import { projectSchema } from "@/lib/zodSchemaTypes";
 import prismaClient from "@/lib/db";
-import { generatePDF } from "@/lib/latex";
 import { getAIResponse } from "@/lib/ai";
 import { revalidatePath } from "next/cache";
+
+const projectSchema = z.object({
+    name: z.string(),
+    description: z.string(),
+    resumeType: z.string(),
+})
 
 export async function createNewProject(data: z.infer<typeof projectSchema>) {
     try {
         const validatedData = projectSchema.parse(data);
+        const { resumeType } = validatedData;
 
-        const filePath = path.join(process.cwd(), 'templates', 'resume.tex');
+        const filePath = path.join(process.cwd(), 'templates', resumeType, `${resumeType}.tex`);
         const latex_code = await fs.readFile(filePath, 'utf-8');
 
         const userId = await requireUser();
@@ -28,13 +34,14 @@ export async function createNewProject(data: z.infer<typeof projectSchema>) {
                     createMany: {
                         data: [
                             {
-                                content: "Hi there! I'm here to help you build your resume. What would you like to add first?",
-                                role: 'Bot'
+                                content: "Hi there! I'm your AI assistant for building the perfect resume. Just tell me what you'd like to add or update.",
+                                role: "Bot"
                             },
                             {
-                                content: "I can help you with work experience, education, skills, and more. Just let me know!",
+                                content: "You can share details like your name, contact info, or ask me to generate sections like work experience or education. I'm here to help!",
                                 role: "Bot"
                             }
+
                         ]
                     }
                 }
