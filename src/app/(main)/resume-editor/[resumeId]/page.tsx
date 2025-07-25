@@ -1,6 +1,4 @@
-import prismaClient from "@/lib/db";
 import ResumeEditor from "./ResumeEditor";
-import { notFound } from "next/navigation";
 
 type Params = Promise<{ resumeId: string }>;
 

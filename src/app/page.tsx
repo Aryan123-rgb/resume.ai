@@ -1,6 +1,5 @@
 import { FeaturesSection } from "@/components/feature-section";
 import { HeroSection } from "@/components/hero-section";
-import { HowItWorksSection } from "@/components/how-it-works-section";
 import Link from "next/link";
 import { FileText, Twitter, Github, Linkedin } from "lucide-react";
 
@@ -9,7 +8,6 @@ export default function Home() {
     <main className="flex flex-col ">
       <HeroSection />
       <FeaturesSection />
-      <HowItWorksSection />
       <footer className="border-t bg-background">
         <div className="container mx-auto px-4 py-16">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-6xl mx-auto">

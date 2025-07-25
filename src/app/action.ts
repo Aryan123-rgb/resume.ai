@@ -6,7 +6,6 @@ import { requireUser } from "@/lib/hooks";
 import { z } from 'zod';
 import prismaClient from "@/lib/db";
 import { getAIResponse } from "@/lib/ai";
-import { revalidatePath } from "next/cache";
 
 const projectSchema = z.object({
     name: z.string(),
@@ -19,7 +18,7 @@ export async function createNewProject(data: z.infer<typeof projectSchema>) {
         const validatedData = projectSchema.parse(data);
         const { resumeType } = validatedData;
 
-        const filePath = path.join(process.cwd(), 'templates', resumeType, `${resumeType}.tex`);
+        const filePath = path.join(process.cwd(), 'templates', resumeType, `${resumeType}.json`);
         const latex_code = await fs.readFile(filePath, 'utf-8');
 
         const userId = await requireUser();
@@ -28,7 +27,7 @@ export async function createNewProject(data: z.infer<typeof projectSchema>) {
             data: {
                 name: validatedData.name,
                 description: validatedData.description,
-                latex_code,
+                latex_code: JSON.parse(latex_code),
                 userId,
                 chat: {
                     createMany: {
@@ -55,7 +54,7 @@ export async function createNewProject(data: z.infer<typeof projectSchema>) {
     }
 }
 
-export async function generateLatexCode(query: string, resumeId: string, latex_code: string) {
+export async function generateLatexCode(query: string, resumeId: string, latex_code: any) {
     try {
         const updated_latex_code = await getAIResponse(query, latex_code);
 
@@ -85,7 +84,6 @@ export async function generateLatexCode(query: string, resumeId: string, latex_c
             });
         });
 
-        revalidatePath(`/resume-editor/${resumeId}`);
         return { success: true, data: updated_latex_code };
     } catch (error) {
         console.error('Error generating latex code', error);

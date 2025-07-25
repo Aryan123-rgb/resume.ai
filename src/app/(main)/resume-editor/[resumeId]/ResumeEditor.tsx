@@ -2,84 +2,50 @@
 
 import { useEffect, useState } from "react";
 import { Eye, FileText, Send, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, prepareLatexCode } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/lib/useToast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { useCompilePdf, useGenerateLatex, useResume } from "./use-resume";
+import {
+  useGenerateAndCompile,
+  useManualCompile,
+  useResumeWithPdf,
+} from "./use-resume";
 
 export default function ResumeEditor({ resumeId }: { resumeId: string }) {
-  const { data: resume, isLoading, isError, error } = useResume(resumeId);
-  const { mutateAsync: generateLatexCode, isPending } =
-    useGenerateLatex(resumeId);
-  const { mutateAsync: compilePdf, isPending: isCompiling } = useCompilePdf();
+  const { resume, isLoadingResume, pdfUrl, pdfError, isCompilingPdf } =
+    useResumeWithPdf(resumeId);
+  const { mutate: compilePdf, isPending, isError } = useManualCompile();
+  const { mutate: generateLatexCode, isPending: isGenerating } =
+    useGenerateAndCompile(resumeId);
 
-  const [pdfUrl, setPdfUrl] = useState("");
   const [query, setQuery] = useState("");
-  const { showError, showInfo } = useToast();
+  const { showError } = useToast();
 
-  const messages = resume?.chat;
-  const latexCode = resume?.latex_code;
+  if (pdfError) {
+    showError("Compilation Error");
+  }
 
-  const handleSend = async () => {
-    if (!query.trim() || !latexCode) {
-      showInfo("Please Enter a valid input");
-      return;
-    }
-
+  const handleCompile = async () => {
     try {
-      // Use the mutation
-      const result = await generateLatexCode({
-        queryText: query,
-        latexCode: latexCode,
-      });
-
-      if (result.success && result?.data) {
-        await handleCompile(result.data);
-      }
+      compilePdf(resume?.latex_code);
     } catch (e) {
-      console.log("Error", e);
-    }
-
-    setQuery("");
-  };
-
-  const handleCompile = async (latexCodeToCompile?: string) => {
-    const codeToCompile = latexCodeToCompile || latexCode;
-
-    if (!codeToCompile) {
-      return;
-    }
-
-    try {
-      const pdfBlob = await compilePdf(codeToCompile);
-
-      if (pdfUrl) {
-        window.URL.revokeObjectURL(pdfUrl);
-      }
-
-      const url = window.URL.createObjectURL(pdfBlob);
-      setPdfUrl(url);
-    } catch (err) {
       showError("Compilation Error");
     }
   };
 
-  // fire off use compile on first mount
-  useEffect(() => {
-    if (latexCode) {
-      handleCompile(latexCode);
+  const handleSend = async () => {
+    try {
+      generateLatexCode({
+        queryText: query,
+        latexCode: resume?.latex_code,
+      });
+      setQuery("");
+    } catch (e) {
+      showError("Something went wrong");
     }
-  }, [latexCode]);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError || !resume) {
-    return <div>Error loading resume... {error?.message}</div>;
-  }
+  };
 
   return (
     <main className="flex h-[calc(100vh-4rem)]">
@@ -88,8 +54,8 @@ export default function ResumeEditor({ resumeId }: { resumeId: string }) {
         <div className="flex flex-col h-full">
           {/* Messages container */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {messages &&
-              messages.map((message) => (
+            {resume?.chat &&
+              resume.chat.map((message) => (
                 <div
                   key={message.id}
                   className={cn(
@@ -123,17 +89,18 @@ export default function ResumeEditor({ resumeId }: { resumeId: string }) {
               <Textarea
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                disabled={isGenerating}
               />
               <Button
                 onClick={handleSend}
-                disabled={!query.trim() || isPending}
+                disabled={!query.trim() || isPending || isGenerating}
                 className={cn(
                   "p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
-                  (!query.trim() || isPending) &&
-                    "pointer-events-none opacity-75"
+                  (!query.trim() || isPending || isGenerating) &&
+                    "cursor-not-allowed opacity-75"
                 )}
               >
-                {isPending ? (
+                {isPending || isGenerating ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <Send className="w-5 h-5" />
@@ -162,14 +129,14 @@ export default function ResumeEditor({ resumeId }: { resumeId: string }) {
                 </div>
               </div>
               <Button
-                disabled={isCompiling}
+                disabled={isCompilingPdf}
                 onClick={() => handleCompile()}
                 className={cn(
                   "gap-2",
-                  isCompiling ?? "pointer-events-none opacity-75"
+                  isCompilingPdf ?? "pointer-events-none opacity-75"
                 )}
               >
-                {isCompiling ? (
+                {isCompilingPdf ? (
                   <>
                     <Loader2 className="animate-spin" />
                     Compiling...
@@ -186,7 +153,7 @@ export default function ResumeEditor({ resumeId }: { resumeId: string }) {
             {/* Preview Content */}
             <div className="flex-1 overflow-auto">
               <div className="h-full w-full p-6">
-                {isCompiling ? (
+                {isCompilingPdf ? (
                   <div className="h-full flex flex-col items-center justify-center space-y-4">
                     <Loader2 className="h-12 w-12 animate-spin text-primary" />
                     <div className="space-y-2 text-center">

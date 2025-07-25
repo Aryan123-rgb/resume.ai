@@ -19,7 +19,7 @@ datasource db {
 model Resume {
   id          String     @id @default(uuid())
   userId      String
-  latex_code  String
+  latex_code  Json 
   name        String
   description String
   chat        Chat[]

@@ -1,19 +1,31 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Brain, Target } from "lucide-react"
+import { MessageSquare, Zap, FileText, Palette } from "lucide-react"
 
 const features = [
     {
-        icon: Brain,
-        title: "AI Resume Builder",
-        description: "Build ATS optimized resume with AI enhanced contents that perfectly match job requirements and industry standards.",
+        icon: MessageSquare,
+        title: "Conversational AI Builder",
+        description: "Simply tell our AI what you want in plain English. No forms, no complexity - just natural conversation that builds your perfect resume.",
         color: "text-blue-500"
     },
     {
-        icon: Target,
-        title: "Interactive Quiz",
-        description: "Upload your resume or fill the details manually and test your strengths and weaknesses through comprehensive analysis.",
+        icon: Zap,
+        title: "Instant Updates",
+        description: "Watch your resume transform in real-time as you make requests. Add experience, change details, or modify sections with simple commands.",
         color: "text-green-500"
+    },
+    {
+        icon: FileText,
+        title: "ATS-Optimized Content",
+        description: "Every resume is automatically formatted for ATS systems with proper structure, keywords, and professional formatting that recruiters love.",
+        color: "text-purple-500"
+    },
+    {
+        icon: Palette,
+        title: "Professional Templates",
+        description: "Choose from carefully designed templates that look great and pass ATS scans. All templates work seamlessly with our AI commands.",
+        color: "text-orange-500"
     }
 ]
 
@@ -22,19 +34,16 @@ export function FeaturesSection() {
         <section id="features" className="py-20 sm:py-32">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center space-y-4 mb-16">
-                    <Badge variant="outline" className="px-3 py-1">
-                        Features
-                    </Badge>
                     <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                        Everything you need to{" "}
-                        <span className="text-gradient">succeed</span>
+                        Resume building made{" "}
+                        <span className="text-gradient">effortless</span>
                     </h2>
                     <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                        Powerful tools and AI-driven insights to help you create the perfect resume and understand what makes it effective.
+                        Experience the future of resume creation with AI that understands exactly what you want and delivers professional results instantly.
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                     {features.map((feature, index) => (
                         <Card
                             key={index}

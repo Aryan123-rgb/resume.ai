@@ -2,7 +2,7 @@ import path from "path";
 import { exec } from "child_process";
 import fs from "fs/promises";
 
-
+// simply accepts the latex code and returns the pdf blob
 export const generatePDF = async (latex_code: string) => {
     const folderPath = path.join(process.cwd(), "tmp");
     const texFilePath = path.join(folderPath, "resume.tex");
