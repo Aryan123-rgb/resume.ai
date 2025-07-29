@@ -4,7 +4,8 @@ import { requireUser } from '@/lib/hooks';
 import { z } from 'zod';
 
 const compileResumeSchema = z.object({
-    latex_code: z.string()
+    latex_code: z.string(),
+    compiler: z.string(),
 })
 
 export async function POST(req: NextRequest) {
@@ -17,7 +18,7 @@ export async function POST(req: NextRequest) {
 
         await requireUser();
 
-        const pdfBuffer = await generatePDF(data.latex_code);
+        const pdfBuffer = await generatePDF(data.latex_code, data.compiler);
 
         // Double-check the buffer before sending
         if (!pdfBuffer || pdfBuffer.length === 0) {

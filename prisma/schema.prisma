@@ -22,6 +22,7 @@ model Resume {
   latex_code  Json 
   name        String
   description String
+  compiler    Compiler
   chat        Chat[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -30,7 +31,7 @@ model Resume {
 model Chat {
   id        String   @id @default(uuid())
   resumeId  String
-  resume    Resume   @relation(references: [id], fields: [resumeId])
+  resume    Resume   @relation(references: [id], fields: [resumeId], onDelete: Cascade)
   role      Role
   content   String
   createdAt DateTime @default(now())
@@ -40,4 +41,9 @@ model Chat {
 enum Role {
   Bot
   Human
+}
+
+enum Compiler {
+  xelatex
+  pdflatex
 }

@@ -13,6 +13,9 @@ const projectSchema = z.object({
     resumeType: z.string(),
 })
 
+const pdflatexType = ["Minimalist"];
+const xelatexType = ["Creative"];
+
 export async function createNewProject(data: z.infer<typeof projectSchema>) {
     try {
         const validatedData = projectSchema.parse(data);
@@ -23,12 +26,22 @@ export async function createNewProject(data: z.infer<typeof projectSchema>) {
 
         const userId = await requireUser();
 
+        const isXeLatex = xelatexType.some((val) => val == resumeType);
+        const isPdfLatex = pdflatexType.some((val) => val == resumeType);
+
+        const compiler = isXeLatex ? "xelatex" : (isPdfLatex ? "pdflatex" : "");
+
+        if (compiler == "") {
+            throw new Error("Invalid resume type selected");
+        }
+
         const resume = await prismaClient.resume.create({
             data: {
                 name: validatedData.name,
                 description: validatedData.description,
                 latex_code: JSON.parse(latex_code),
                 userId,
+                compiler: compiler,
                 chat: {
                     createMany: {
                         data: [

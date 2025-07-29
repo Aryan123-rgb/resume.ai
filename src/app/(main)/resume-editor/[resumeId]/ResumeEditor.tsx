@@ -29,7 +29,10 @@ export default function ResumeEditor({ resumeId }: { resumeId: string }) {
 
   const handleCompile = async () => {
     try {
-      compilePdf(resume?.latex_code);
+      compilePdf({
+        latexCode: resume?.latex_code as string,
+        compiler: resume?.compiler as string,
+      });
     } catch (e) {
       showError("Compilation Error");
     }
@@ -37,13 +40,29 @@ export default function ResumeEditor({ resumeId }: { resumeId: string }) {
 
   const handleSend = async () => {
     try {
-      generateLatexCode({
-        queryText: query,
-        latexCode: resume?.latex_code,
-      });
-      setQuery("");
+      generateLatexCode(
+        {
+          queryText: query,
+          latexCode: resume?.latex_code,
+          compiler: resume?.compiler as string,
+        },
+        {
+          onError: (error) => {
+            showError("Couldn't retrieve response. Try again");
+          },
+        }
+      );
     } catch (e) {
       showError("Something went wrong");
+    } finally {
+      setQuery("");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      if (!query.trim() || isPending || isGenerating) return;
+      handleSend();
     }
   };
 
@@ -87,6 +106,7 @@ export default function ResumeEditor({ resumeId }: { resumeId: string }) {
           <div className="border-t border-gray-200 dark:border-gray-700 p-4">
             <div className="flex items-center space-x-2">
               <Textarea
+                onKeyDown={handleKeyDown}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 disabled={isGenerating}

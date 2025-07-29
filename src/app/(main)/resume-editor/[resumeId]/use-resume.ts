@@ -1,9 +1,8 @@
-import { generateLatexCode } from "@/app/action";
 import { Chat, Resume } from "@/generated/prisma";
 import { prepareLatexCode } from "@/lib/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export type FullResume = Resume & {
     chat: Chat[];
@@ -25,10 +24,10 @@ const fetchResume = async (resumeId: string): Promise<FullResume> => {
     }
 };
 
-const compilePdf = async (latexCode: string): Promise<Blob> => {
+const compilePdf = async (latexCode: string, compiler: string): Promise<Blob> => {
     const res = await axios.post(
         `/api/compile-resume`,
-        { latex_code: latexCode },
+        { latex_code: latexCode, compiler },
         { responseType: "blob" }
     );
 
@@ -54,6 +53,30 @@ const compilePdf = async (latexCode: string): Promise<Blob> => {
     return new Blob([res.data], { type: "application/pdf" });
 };
 
+const generateLatexCode = async (query: string, resumeId: string, latex_code: string) => {
+    try {
+        const res = await axios.post(`/api/generate-latex-code`, {
+            latex_code,
+            resumeId,
+            query
+        }, {
+            timeout: 45000, // 45 seconds timeout
+        });
+
+        if (res.status !== 200 || !res.data.success) {
+            throw new Error(res.data?.error || "Failed to get response");
+        }
+
+        return res.data;
+    } catch (error: any) {
+        if (error.code === 'ECONNABORTED') {
+            throw new Error('Request timed out. The AI service is taking too long.');
+        }
+
+        throw error;
+    }
+}
+
 
 export const useResumeWithPdf = (resumeId: string) => {
     const [pdfUrl, setPdfUrl] = useState('');
@@ -69,8 +92,8 @@ export const useResumeWithPdf = (resumeId: string) => {
     // cache pdf blobs 
     const pdfBlob = useQuery({
         queryKey: ["pdf", resumeData.data?.latex_code],
-        queryFn: () => compilePdf(prepareLatexCode(resumeData.data?.latex_code)),
-        enabled: !!resumeData.data?.latex_code,
+        queryFn: () => compilePdf(prepareLatexCode(resumeData.data?.latex_code), resumeData.data?.compiler as string),
+        enabled: !!resumeData.data?.latex_code && !!resumeData.data?.compiler,
         staleTime: 5 * 60 * 1000,
         gcTime: 10 * 60 * 1000,
         retry: 2
@@ -117,8 +140,8 @@ export const useManualCompile = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async (latexCode: any) => {
-            return await compilePdf(prepareLatexCode(latexCode));
+        mutationFn: async ({ latexCode, compiler }: { latexCode: string, compiler: string }) => {
+            return await compilePdf(prepareLatexCode(latexCode), compiler);
         },
         onSuccess: (pdfBlob, latexCode) => {
             // Cache the compiled PDF
@@ -134,7 +157,7 @@ export const useGenerateAndCompile = (resumeId: string) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ queryText, latexCode }: { queryText: string, latexCode: any }) => {
+        mutationFn: async ({ queryText, latexCode, compiler }: { queryText: string, latexCode: any, compiler: string }) => {
             if (!latexCode) throw new Error("Latex code is missing");
 
             // Generate new latex code
@@ -145,7 +168,7 @@ export const useGenerateAndCompile = (resumeId: string) => {
             }
 
             // Compile the new latex code
-            const pdfBlob = await compilePdf(prepareLatexCode(result.data));
+            const pdfBlob = await compilePdf(prepareLatexCode(result.data), compiler);
 
             return {
                 latexCode: result.data,
