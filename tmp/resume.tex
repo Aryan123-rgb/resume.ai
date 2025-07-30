@@ -1,234 +1,200 @@
-%-------------------------
-% Resume in Latex
-% Author : Jake Gutierrez
-% Based off of: https://github.com/sb2nov/resume
-% License : MIT
-%-------------------------
-
-\documentclass[letterpaper,11pt]{article}
-
-\usepackage{latexsym}
-\usepackage[empty]{fullpage}
-\usepackage{titlesec}
-\usepackage{marvosym}
-\usepackage[usenames,dvipsnames]{color}
-\usepackage{verbatim}
+\documentclass[a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{fontspec}
+\setmainfont{Carlito}
+\usepackage{geometry}
+\geometry{margin=0.5in}
 \usepackage{enumitem}
-\usepackage[hidelinks]{hyperref}
-\usepackage{fancyhdr}
-\usepackage[english]{babel}
-\usepackage{tabularx}
-\input{glyphtounicode}
+\usepackage{hyperref}
+\usepackage{sectsty} % Package to adjust section font size
+\usepackage{xcolor}
+\usepackage{hyperref}
 
-%----------FONT OPTIONS----------
-% sans-serif
-% \usepackage[sfdefault]{FiraSans}
-% \usepackage[sfdefault]{roboto}
-% \usepackage[sfdefault]{noto-sans}
-% \usepackage[default]{sourcesanspro}
+\thispagestyle{empty}
+% Decrease the font size for sections and subsections
+\sectionfont{\normalsize} % or \small for even smaller
+\subsectionfont{\normalsize} % or \footnotesize for even smaller
 
-% serif
-% \usepackage{CormorantGaramond}
-% \usepackage{charter}
-
-\pagestyle{fancy}
-\fancyhf{} % clear all header and footer fields
-\fancyfoot{}
-\renewcommand{\headrulewidth}{0pt}
-\renewcommand{\footrulewidth}{0pt}
-
-% Adjust margins
-\addtolength{\oddsidemargin}{-0.5in}
-\addtolength{\evensidemargin}{-0.5in}
-\addtolength{\textwidth}{1in}
-\addtolength{\topmargin}{-.5in}
-\addtolength{\textheight}{1.0in}
-
-\urlstyle{same}
-
-\raggedbottom
-\raggedright
-\setlength{\tabcolsep}{0in}
-
-% Sections formatting
-\titleformat{\section}{
-  \vspace{-4pt}\scshape\raggedright\large
-}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
-
-% Ensure that generate pdf is machine readable/ATS parsable
-\pdfgentounicode=1
-
-%-------------------------
-% Custom commands
-\newcommand{\resumeItem}[1]{
-  \item\small{
-    {#1 \vspace{-2pt}}
-  }
+% Define a command for section lines with custom spacing
+\newcommand{\sectionline}{
+  \vspace{-2em} % Adjust space above the line
+  \noindent\rule{\textwidth}{0.4pt}
+  \vspace{0em} % Adjust space below the line
 }
 
-\newcommand{\resumeSubheading}[4]{
-  \vspace{-2pt}\item
-    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
-      \textbf{#1} & #2 \\
-      \textit{\small#3} & \textit{\small #4} \\
-    \end{tabular*}\vspace{-7pt}
+\newcommand{\tabInd}{
+  \hspace{2em}
 }
 
-\newcommand{\resumeSubSubheading}[2]{
-    \item
-    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
-      \textit{\small#1} & \textit{\small #2} \\
-    \end{tabular*}\vspace{-7pt}
+\newcommand{\verticalInd}{
+  \vspace{-0.9em} % Adjust space above the line
+  \noindent\rule{\textwidth}{0pt}
+  \vspace{0em} % Adjust space below the line
 }
 
-\newcommand{\resumeProjectHeading}[2]{
-    \item
-    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
-      \small#1 & #2 \\
-    \end{tabular*}\vspace{-7pt}
+\newcommand{\sectionlineP}{
+  \vspace{-2em} % Adjust space above the line
+  \noindent\rule{\textwidth}{0.4pt}
+  \vspace{-2em} % Adjust space below the line
 }
-
-\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
-
-\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
-
-\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
-\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
-\newcommand{\resumeItemListStart}{\begin{itemize}}
-\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
-
-%-------------------------------------------
-%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 \begin{document}
 
-%----------HEADING----------
-\begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
-  \textbf{{\LARGE Aryan Srivastava}}
-\vspace{0.5em}
-  \\
-  \href{https://www.linkedin.com/in/nikhil-ranjan-tnp/}{LinkedIn: https://www.linkedin.com/in/nikhil-ranjan-tnp/} & Email: \href{mailto:nikhilranjan1103@gmail.com }{nikhilranjan1103@gmail.com } \\
-  \href{https://github.com/then00bprogrammer}{Github: https://github.com/then00bprogrammer} & Mobile:~~~+91-8318285086  \\
-\end{tabular*}
+\begin{center}
+\LARGE \textbf{Aakash Borse} \\
+\vspace{5pt}
+\normalsize
+9104320838 | 
+\href{mailto:borseaakash082004@gmail.com}{\textcolor{blue}{borseaakash082004@gmail.com}} |
+\href{https://www.linkedin.com/in/aakash-borse-977077278/}{\textcolor{blue}{LinkedIn}} |
+\href{https://github.com/aakash811}{\textcolor{blue}{Github}} |
+\href{https://leetcode.com/u/aakash_811/}{\textcolor{blue}{Leetcode}} |
+\href{https://codeforces.com/profile/Aakash_0880}{\textcolor{blue}{Codeforces}} |
+\href{https://www.codechef.com/users/void_dear_68}{\textcolor{blue}{Codechef}}
+\end{center}
+\vspace{-1.5em}
 
-%-----------EDUCATION-----------
-\section{Education}
-  \resumeSubHeadingListStart
-  \resumeSubheading
-  {Indian Institute of Information Technology, Bhopal}{Bhopal, India}
-  {Bachelor of Technology in Electronics and Communication Engineering; CGPA: 8.6}{Nov 2022 -- April 2026}
-  \resumeItemListStart
-  \resumeItem{Relevant Coursework}{\textit{Data Structures and Algorithms, OOPS, DBMS, Operating System}}
-  \resumeItemListEnd
-  \resumeSubHeadingListEnd
+\section*{SUMMARY}
+\sectionline
+\verticalInd
+Final-year B.Tech student at IIIT Bhopal with a 9.39 CGPA, strong DSA background (CF Specialist, LC Knight), and experience building secure, scalable full-stack web apps.
+\vspace{-0.5em}
 
+\section*{EDUCATION}
+\sectionline
+\verticalInd
+\textbf{Indian Institute of Information Technology Bhopal} \hfill November 2022 - Present \\
+Bachelor of Technology in Information Technology (IT)\hfill \textbf{CGPA: 9.39}\\
+\verticalInd
+\textbf{Relevant Coursework:} Data Structures and Algorithms, Object Oriented Programming, Database Management Systems, Software Engineering, Operating Systems, Artificial Intelligence, Computer Networks\\
+\vspace{-1.75em}
 
-%-----------SKILLS-----------
-\section{Technical Skills}
-  \begin{itemize}[leftmargin=0.15in, label={}]
-  \small{\item{
-   \textbf{Languages}{: C/C++, Javascript, Typescript, Python} \\
-   \textbf{Frameworks}{: Next.js, React.js, Node.js, Express.js ,Flask, Discord.js,  Chakra UI} \\
-   \textbf{Tools}{: Git, MongoDB, Mongoose, Neo4j (Graph Database), Firebase, Apace Lucene, SocketIO, JWTs, bcrypt, Manifest V3, Vercel, PythonAnywhere, Google Colab, Windows} \\
-  }}
-  \end{itemize}
+\section*{WORK EXPERIENCE}
+\sectionline
+\vspace{-2.25em}
+\subsection*{\href{https://drive.google.com/file/d/1-d26qFdlom1rI3yVcRdyQUoUUeeGPar2/view?usp=sharing}{\textbf{\textcolor{blue}{Digital Guruji}}} | Full Stack Intern - Node.js, Express, JavaScript, Flask, Zapier, AI4Chat.co \hfill August 2024 - April 2025}
+\vspace{-0.5em}
+\begin{itemize}[leftmargin=*]
+    \item Developed \textbf{AI-powered workflows} using \textbf{Zapier}, \textbf{Flask}, and \textbf{Node.js} to automate client processes, boosting delivery efficiency by \textbf{40\%}.
+    \vspace{-0.5em}
+    \item Engineered backend logic for \textbf{10+ integrations} with secure \textbf{API services}, reducing server response time by \textbf{25\%}.
+    \vspace{-0.5em}
+    \item Delivered scalable tools like \textbf{Airbrush (AI image gen)} and \textbf{Brandscreen (testimonials)}, serving \textbf{500+ monthly users}.
+\end{itemize}
+\vspace{-1.5em}
+\subsection*{\href{https://codame.club/}{\textbf{\textcolor{blue}{CODAME, IIIT Bhopal}}} | Web Developer - Next.js, JavaScript, TailwindCSS, Node.js, Express \hfill September 2023 - April 2024}
+\vspace{-0.5em}
+\begin{itemize}[leftmargin=*]
+    \item Spearheaded development of the club’s official website, which delivered seamless UI/UX across devices and \textbf{enhanced \\ performance by 15 \%} through lazy loading, caching, and route-based code splitting
+    \vspace{-0.5em}
+    \item Built \textbf{5+ reusable components} using React hooks, boosting scalability, development speed, and overall code maintainability
+    \vspace{-0.5em}
+    \item Collaborated within a \textbf{3-member Agile team} to ensure timely delivery across multiple sprints, ensuring smooth coordination and meeting project deadlines
+\end{itemize}
+\vspace{-1.25em}
 
+\section*{ACADEMIC PROJECTS}
+\sectionlineP
+\vspace{-0.25em}
 
-%-----------PROJECTS-----------
-\section{Projects}
-  \resumeSubHeadingListStart
+\subsection*{
+  \textbf{FileShare: Secure File Sharing Web App | Next.js 14, TailwindCSS, Clerk Auth, Resend Email, Firebase}
+  \hfill 
+  \textnormal{
+  \href{https://file-share-app-delta.vercel.app/}{\textcolor{blue}{Live}} |
+  \href{https://github.com/aakash811/FileShare-App}{\textcolor{blue}{GitHub}}
+}}
+\vspace{-0.5em}
+\begin{itemize}[leftmargin=*]
+    \item Deployed a secure file-sharing app with \textbf{OAuth login, password protection, and role-based access}, increasing user trust and document security across 100+ users.
+    \vspace{-0.5em}
+    \item Boosted file upload speed by \textbf{40\%} and improved onboarding by \textbf{70\%} via Firebase rules, debouncing, and lazy-loading.
+    \vspace{-0.5em}
+    \item Added download tracking to enable \textbf{real-time visibility and file usage auditing}.
+\end{itemize}
 
-      \resumeProjectHeading
-      {\href{https://github.com/SahilSingh177/Interestify}{\textbf{Interestify}}}
-      {\emph{Next.js, TypeScript, Flask, Neo4j, Scikit-Learn, Apache Lucene, Redis, Chakra UI}}
-      \resumeItemListStart
-      \resumeItem{Developed an innovative research paper recommendation system based on user interests}
-      \resumeItem{Implemented efficient data scraping from prominent sources like Springer}
-      \resumeItem{Utilized machine learning techniques (Scikit-Learn) for article recommendations}
-      \resumeItem{Implemented Apache Lucene for full-text search functionality}
-      \resumeItem{Enabled bookmarking, liking, and article tracking features for users}
-      \resumeItem{Provided regular email updates to keep users informed and engaged}
-      \resumeItem{Utilized Graph Database (Neo4j) for managing complex relationships}
-      \resumeItem{Implemented Redis caching for optimized performance}
-      \resumeItemListEnd
-    
-      \resumeProjectHeading
-      {\href{https://github.com/then00bprogrammer/GPT-Cat}{\textbf{GPT Cat}}}
-      {\emph{Manifest V3, React.js, Typescript, Node.js, Express.js, MongoDB, Mongoose, Chakra UI}}
-      \resumeItemListStart
-      \resumeItem{This web extension organizes, saves, and shares customizable prompts.}
-      \resumeItem{See most liked prompts, select writing styles and browse prompts by category on Chat GPT's website itself.}
-      \resumeItem{Bookmark your Chat GPT conversation on Chat GPT's website itself.}
-      \resumeItem{Like a public prompt or favourite them to add them to your own collection.}
-      \resumeItem{Make a new prompt and organize it using nested folders in an infinitely customizable way.}
-      \resumeItemListEnd
-      \resumeProjectHeading
-      {\href{https://github.com/SahilSingh177/BotX}{\textbf{Talkative}}}
-      {\emph{\textbf{React.js}, \textbf{Node.js}, \textbf{Express.js}, \textbf{MongoDB}, \textbf{Mongoose}, Socket.IO, JWTs, bcrypt}}
-      \resumeItemListStart
-      \resumeItem{Developed a real-time chat application using the \textbf{MERN stack} (\textbf{MongoDB}, \textbf{Express.js}, \textbf{React.js}, \textbf{Node.js}) and \textbf{Socket.IO}, enabling seamless communication for over 100 concurrent users.}
-      \resumeItem{Implemented robust user authentication and authorization functionalities using \textbf{JWTs} and \textbf{bcrypt}, enhancing security by 99\% and protecting user data.}
-      \resumeItem{Designed and optimized responsive UI/UX with \textbf{React.js} and \textbf{CSS}, improving user engagement by 30\% and ensuring cross-device compatibility.}
-      \resumeItemListEnd
-      
-  \resumeSubHeadingListEnd
+\vspace{-1.5em}
 
-   
+\subsection*{
+  \textbf{SkillSync: Student Coding Tracker | MERN, Cron, Redis, Nodemailer, Codeforces API, Shadcn-UI}
+  \hfill 
+  \textnormal{
+  \href{https://student-progress-tracker-pi.vercel.app/}{\textcolor{blue}{Live}} |
+  \href{https://github.com/aakash811/Student-Progress-Tracker}{\textcolor{blue}{GitHub}}
+}}
+\vspace{-0.5em}
+\begin{itemize}[leftmargin=*]
+    \item Engineered a full-stack dashboard visualizing \textbf{contest stats, activity trends, and submissions} for 100+ students by integrating the Codeforces API.
+    \vspace{-0.5em}
+    \item Cut API dependency by \textbf{60\%} using \textbf{cron-based syncs} and \textbf{Redis caching} for faster data loading.
+    \vspace{-0.5em}
+    \item Improved engagement by \textbf{25\%} using Nodemailer to send personalized nudges to inactive students.
+\end{itemize}
 
-%--------ACHIEVEMENTS-------
-\section{Achievements}
-  \begin{itemize}[leftmargin=0.15in, label={}]
-      \resumeItemListStart
-         \resumeItem
-            {\textbf {Specialist} @ Codeforces},{\href{https://codeforces.com/profile/then00bprogrammer}{\underline{Aryan Srivastava, Codeforces}}}
-            
-         \resumeItem
-            {\textbf {4*} @ Codechef}{\href{https://www.codechef.com/users/the_way_i_am}{\underline{Aryan Srivastava, Codechef}}}
-            
-         \resumeItem
-            {\textbf {700+} problems, \textbf{Knight(2094 Contest Rating)} @ Leetcode }{\href{https://leetcode.com/then00bprogrammer/}{\underline{Aryan Srivastava, Leetcode}}}
-            
-          \resumeItem
-            {\textbf{Global rank 227} in Codeforces Round 867 (Div 3)}
-            {\href{https://codeforces.com/contest/1822/standings/page/2}{\underline{Contest ranklist}}}
-          \resumeItem
-            {\textbf{Global rank 202} in Codechef Starters 87 (Div 2)}
-            {\href{https://www.codechef.com/rankings/START87B?itemsPerPage=100&order=asc&page=3&sortBy=rank}{\underline{Contest ranklist}}}
-          
-          \resumeItem
-            { \textbf{Global rank 89 (AIR 7)} out of 22K participants in Leetcode Biweekly 105}{\href{https://leetcode.com/contest/biweekly-contest-105/ranking/4/}
-            {\underline{Contest ranklist}}}
-  
-         \resumeItem
-            { \textbf{Global rank 416} out of 32K participants in Leetcode Weekly 348}{\href{https://leetcode.com/contest/weekly-contest-348/ranking/17/}
-            {\underline{Contest ranklist}}}
-  
-          \resumeItem
-            { \textbf{Global rank 823} out of 21K participants in Leetcode Biweekly 99}{\href{https://leetcode.com/contest/biweekly-contest-99/ranking/33/}{\underline{Contest ranklist}}}
-            
-          \resumeItem
-            { \textbf{Google Hashcode 2022} : Global Rank 2365}
-          
-      \resumeItemListEnd
-      \end{itemize}
-    
+\vspace{-1.5em}
 
-%---------CERTIFICATIONS----------
-\section{Certifications}
-  \begin{itemize}[leftmargin=0.15in, label={}]
-      \resumeItemListStart
-          \resumeItem{\textbf{Bitcoin for Developers}}{\href{https://learn.saylor.org/pluginfile.php/1/tool_certificate/issues/1675108213/4445914663NR.pdf}{Link to Certification}}
-          
-          \resumeItem{\textbf{Bitcoin for Everybody}}{\href{https://learn.saylor.org/pluginfile.php/1/tool_certificate/issues/1675106020/4395309962NR.pdf}{Link to Certification}}
-          
-          \resumeItem{\textbf{Flutter Development}}{\href{https://www.udemy.com/certificate/UC-1910c6da-1259-4e27-ab91-40eb16aa98e8/}{Link to Certification}}
-          
-          \resumeItem{\textbf{Certified Google Cloud Practitioner}}
-          
-          \resumeItem{\textbf{Open Source Contributor @Hacktoberfest 2022}}
-      \resumeItemListEnd
-  \end{itemize}
+\subsection*{
+  \textbf{Doczilla: AI-Powered Document Assistant | LangChain, FAISS, Transformers, Groq API, Gradio, Render}
+  \hfill 
+  \textnormal{
+  \href{https://pdf-chatbot-gkcz.onrender.com/}{\textcolor{blue}{Live}} |
+  \href{https://github.com/aakash811/PDF-chatbot}{\textcolor{blue}{GitHub}}
+}}
+\vspace{-0.5em}
+\begin{itemize}[leftmargin=*]
+    \item Developed an intelligent PDF assistant enabling \textbf{real-time semantic search} using \textbf{LangChain}, \textbf{FAISS}, and Transformer models, achieving \textbf{95\%+ query accuracy} across diverse documents.
+    \vspace{-0.5em}
+    \item Deployed a responsive and low-latency \textbf{Gradio interface on Render}, enhancing user experience with a \textbf{40\% reduction in query response time} and smooth interaction with uploaded PDFs.
+\end{itemize}
 
+\vspace{-1.25em}
 
-\end{document}
+\section*{ACHIEVEMENTS}
+\sectionlineP
+\verticalInd
+\begin{itemize}[leftmargin=*]
+    \item Ranked in the \textbf{top 4.1\% globally} on \textbf{LeetCode}, solving \textbf{650+ problems} with a peak rating of \textbf{1910} and earning the \textbf{Knight} badge
+    \vspace{-0.5em}
+
+    \item Attained \textbf{Specialist} title on \textbf{Codeforces} with a rating of \textbf{1410}, demonstrating high-speed coding accuracy in rated contests
+    \vspace{-0.5em}
+
+    \item Secured \textbf{3-Star} on \textbf{CodeChef} (rating: \textbf{1683}), ranking in the top \textbf{1.5\%} among \textbf{300K+ global participants}
+    \vspace{-0.5em}
+
+    \item Reached \textbf{4-Star} status on \textbf{GeeksforGeeks} (score: \textbf{1982}, rank: \textbf{512}), with advanced-level coverage of algorithmic problems
+\end{itemize}
+
+\vspace{-1.25em}
+
+\section*{SKILLS}
+\sectionline
+\verticalInd
+\vspace{-2em}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Languages:} JavaScript, Python, C, C++, Java, Go, SQL, HTML, CSS 
+    \vspace{-0.5em}
+    \item \textbf{Frameworks \& Libraries:} React, Next.js, Node.js, Express.js, Redux, Socket.io, TailwindCSS, Bootstrap 
+    \vspace{-0.5em}
+    \item \textbf{Developer Tools:} Git, Docker, Jupyter, Postman, VS Code, Vercel, Render, Hugging Face Spaces
+    \vspace{-0.5em}
+    \item \textbf{Databases \& Auth:} MongoDB, PostgreSQL, MySQL, Firebase, JWT, Bcrypt.js
+    \vspace{-0.5em}
+    \item \textbf{Soft Skills:} Leadership, Teamwork, Event Management, 
+    \vspace{-0.5em}
+\end{itemize}
+
+\vspace{-0.75em}
+
+\section*{CERTIFICATIONS}
+\sectionline
+\verticalInd
+\vspace{-2em}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Google Cloud Computing Foundations} \hfill \href{https://www.credly.com/badges/bffe6264-46ba-47cc-ba7b-d819015e2081/public_url}{\textcolor{blue}{Link}} 
+    \vspace{-0.5em}
+    \item \textbf{AWS Educate: Cloud 101} \hfill \href{https://www.credly.com/badges/bffe6264-46ba-47cc-ba7b-d819015e2081/public_url}{\textcolor{blue}{Link}} 
+    \vspace{-0.5em}
+\end{itemize}
+\end{document}\cite{\cite{\ref{\href{}{}}}}

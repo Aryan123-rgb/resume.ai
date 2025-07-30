@@ -5,9 +5,9 @@ import { generatePDF } from "@/lib/latex";
 import { getAIResponse } from "@/lib/ai";
 
 export async function GET(req: NextRequest) {
-    const folderPath = path.join(process.cwd(), "templates", "Minimalist");
-    const jsonPath = path.join(folderPath, "Minimalist.json");
-    const latexPath = path.join(folderPath, "Minimalist.tex");
+    const folderPath = path.join(process.cwd(), "templates", "Creative");
+    const jsonPath = path.join(folderPath, "Creative.json");
+    const latexPath = path.join(folderPath, "Creative.tex");
 
     try {
         const jsonData = await fs.readFile(jsonPath, 'utf-8');
@@ -19,14 +19,14 @@ export async function GET(req: NextRequest) {
 
         // return NextResponse.json('ok');
 
-        let mainLatexCode = await fs.readFile(latexPath, 'utf-8');
-        // let mainLatexCode = data.main;
+        // let mainLatexCode = await fs.readFile(latexPath, 'utf-8');
+        let mainLatexCode = data.main;
 
         Object.entries(data).forEach(([key, value]) => {
             mainLatexCode = mainLatexCode.replaceAll(`{{${key}}}`, String(value));
         })
 
-        const pdfBuffer = await generatePDF(mainLatexCode);
+        const pdfBuffer = await generatePDF(mainLatexCode, "xelatex");
 
         if (!pdfBuffer || pdfBuffer.length === 0) {
             throw new Error("Generated PDF is empty");
