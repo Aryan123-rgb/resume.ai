@@ -10,7 +10,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Prisma generate and DB sync (NEON is always available)
+# Prisma generate and DB sync 
 RUN npx prisma db push
 RUN npx prisma generate
 

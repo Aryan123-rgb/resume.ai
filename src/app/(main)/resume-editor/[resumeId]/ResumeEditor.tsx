@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Eye, FileText, Send, Loader2 } from "lucide-react";
-import { cn, prepareLatexCode } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/lib/useToast";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -22,6 +22,8 @@ export default function ResumeEditor({ resumeId }: { resumeId: string }) {
 
   const [query, setQuery] = useState("");
   const { showError } = useToast();
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   if (pdfError) {
     showError("Compilation Error");
@@ -66,13 +68,27 @@ export default function ResumeEditor({ resumeId }: { resumeId: string }) {
     }
   };
 
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+      const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
+      setShouldAutoScroll(isNearBottom);
+    }
+  };
+
+  useEffect(() => {
+    if (shouldAutoScroll && scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [resume?.chat, shouldAutoScroll]);
+
   return (
     <main className="flex h-[calc(100vh-4rem)]">
       {/* Left Side - Resume Chat */}
       <div className="w-1/2 h-full border-r border-gray-200 dark:border-gray-700">
         <div className="flex flex-col h-full">
           {/* Messages container */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4">
             {resume?.chat &&
               resume.chat.map((message) => (
                 <div
@@ -149,14 +165,14 @@ export default function ResumeEditor({ resumeId }: { resumeId: string }) {
                 </div>
               </div>
               <Button
-                disabled={isCompilingPdf}
+                disabled={isCompilingPdf || isLoadingResume}
                 onClick={() => handleCompile()}
                 className={cn(
                   "gap-2",
                   isCompilingPdf ?? "pointer-events-none opacity-75"
                 )}
               >
-                {isCompilingPdf ? (
+                {isCompilingPdf || isLoadingResume ? (
                   <>
                     <Loader2 className="animate-spin" />
                     Compiling...

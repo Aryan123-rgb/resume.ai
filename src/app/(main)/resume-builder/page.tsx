@@ -35,15 +35,15 @@ const resumeTemplates = [
     preview: "/api/placeholder/300/400",
     features: ["Visual Appeal", "Portfolio Section", "Color Accents"],
   },
-  {
-    id: 3,
-    name: "Executive Classic",
-    description: "Traditional and elegant format for senior-level positions",
-    category: "Executive",
-    color: "gray",
-    preview: "/api/placeholder/300/400",
-    features: ["Professional", "Leadership Focus", "Achievement Highlights"],
-  },
+  // {
+  //   id: 3,
+  //   name: "Executive Classic",
+  //   description: "Traditional and elegant format for senior-level positions",
+  //   category: "Executive",
+  //   color: "gray",
+  //   preview: "/api/placeholder/300/400",
+  //   features: ["Professional", "Leadership Focus", "Achievement Highlights"],
+  // },
   {
     id: 4,
     name: "Minimalist Clean",
@@ -54,26 +54,26 @@ const resumeTemplates = [
     preview: "/api/placeholder/300/400",
     features: ["Clean Layout", "Easy to Read", "Space Efficient"],
   },
-  {
-    id: 5,
-    name: "Tech Specialist",
-    description:
-      "Designed specifically for software developers and IT professionals",
-    category: "Technology",
-    color: "indigo",
-    preview: "/api/placeholder/300/400",
-    features: ["Skills Matrix", "Project Showcase", "GitHub Integration"],
-  },
-  {
-    id: 6,
-    name: "Academic Scholar",
-    description:
-      "Perfect for researchers, professors, and academic professionals",
-    category: "Academic",
-    color: "amber",
-    preview: "/api/placeholder/300/400",
-    features: ["Publications", "Research Focus", "Academic Format"],
-  },
+  // {
+  //   id: 5,
+  //   name: "Tech Specialist",
+  //   description:
+  //     "Designed specifically for software developers and IT professionals",
+  //   category: "Technology",
+  //   color: "indigo",
+  //   preview: "/api/placeholder/300/400",
+  //   features: ["Skills Matrix", "Project Showcase", "GitHub Integration"],
+  // },
+  // {
+  //   id: 6,
+  //   name: "Academic Scholar",
+  //   description:
+  //     "Perfect for researchers, professors, and academic professionals",
+  //   category: "Academic",
+  //   color: "amber",
+  //   preview: "/api/placeholder/300/400",
+  //   features: ["Publications", "Research Focus", "Academic Format"],
+  // },
 ];
 
 const categoryColors = {

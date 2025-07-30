@@ -14,7 +14,7 @@ const projectSchema = z.object({
 })
 
 const pdflatexType = ["Minimalist"];
-const xelatexType = ["Creative"];
+const xelatexType = ["Creative", "Professional"];
 
 export async function createNewProject(data: z.infer<typeof projectSchema>) {
     try {
@@ -63,43 +63,6 @@ export async function createNewProject(data: z.infer<typeof projectSchema>) {
         return { success: true, resumeId: resume.id };
     } catch (error) {
         console.error('Error creating project:', error);
-        return { success: false, error: error };
-    }
-}
-
-export async function generateLatexCode(query: string, resumeId: string, latex_code: any) {
-    try {
-        const updated_latex_code = await getAIResponse(query, latex_code);
-
-        await prismaClient.$transaction(async (tx) => {
-            await tx.resume.update({
-                where: {
-                    id: resumeId
-                },
-                data: {
-                    latex_code: updated_latex_code
-                }
-            });
-
-            await tx.chat.createMany({
-                data: [
-                    {
-                        resumeId: resumeId,
-                        content: query,
-                        role: 'Human',
-                    },
-                    {
-                        resumeId: resumeId,
-                        content: "The changes were made successfully",
-                        role: 'Bot',
-                    }
-                ]
-            });
-        });
-
-        return { success: true, data: updated_latex_code };
-    } catch (error) {
-        console.error('Error generating latex code', error);
         return { success: false, error: error };
     }
 }
