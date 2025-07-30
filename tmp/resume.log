@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/Debian) (preloaded format=xelatex 2018.1.22)  30 JUL 2025 10:01
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/Debian) (preloaded format=xelatex 2018.1.22)  30 JUL 2025 10:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -708,31 +708,26 @@ LaTeX Info: Redefining \nameref on input line 42.
 \openout3 = `resume.out'.
 
 
-Overfull \hbox (1.50717pt too wide) in paragraph at lines 59--63
+Overfull \hbox (1.50717pt too wide) in paragraph at lines 59--66
  []
  []
 
 
-Overfull \hbox (1.50717pt too wide) in paragraph at lines 65--72
+Overfull \hbox (1.50717pt too wide) in paragraph at lines 148--150
  []
  []
 
 
-Overfull \hbox (1.50717pt too wide) in paragraph at lines 154--156
+Overfull \hbox (1.50717pt too wide) in paragraph at lines 166--169
  []
  []
 
 
-Overfull \hbox (1.50717pt too wide) in paragraph at lines 172--175
+Overfull \hbox (1.50717pt too wide) in paragraph at lines 185--188
  []
  []
 
-
-Overfull \hbox (1.50717pt too wide) in paragraph at lines 191--194
- []
- []
-
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 200.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 194.
 (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/se-ascii-print.def
 File: se-ascii-print.def 2011/12/02 v1.10 stringenc: Printable ASCII characters
 
@@ -740,11 +735,11 @@ File: se-ascii-print.def 2011/12/02 v1.10 stringenc: Printable ASCII characters
 [1
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 200.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 194.
  (./resume.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 200.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 200.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 200.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 194.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 194.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 194.
  ) 
 Here is how much of TeX's memory you used:
  21521 strings out of 493638

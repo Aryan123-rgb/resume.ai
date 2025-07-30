@@ -16,6 +16,7 @@ import { Label } from "../../../components/ui/label";
 import { useState } from "react";
 import { createNewProject } from "@/app/action";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface CreateNewProjectButtonProps {
   resumeType: string;
@@ -108,7 +109,11 @@ export default function CreateNewProjectButton({
                 Cancel
               </Button>
             </DialogClose>
-            <Button onClick={handleCreateNewProject} className="px-6">
+            <Button
+              disabled={loading}
+              onClick={handleCreateNewProject}
+              className={cn("px-6", loading && "opacity-50 cursor-not-allowed")}
+            >
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

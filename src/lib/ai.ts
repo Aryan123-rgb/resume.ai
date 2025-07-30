@@ -1,5 +1,4 @@
 import { GoogleGenAI } from "@google/genai";
-import { prepareLatexCode } from "./utils";
 
 const PROMPT_TEMPLATE = `
 You are an expert LaTeX resume editor and formatter with deep knowledge of professional resume standards.
@@ -8,8 +7,20 @@ CORE RESPONSIBILITIES:
 1. Analyze the user query to identify ONLY the affected resume section(s)
 2. Update ONLY the relevant field(s) - never modify unrelated sections
 3. Return ONLY the updated fields in valid JSON format
-4. NEVER modify "header" or "main" fields unless explicitly requested
-5. Ensure all LaTeX code compiles correctly without syntax errors
+4. Ensure all LaTeX code compiles correctly without syntax errors
+
+SECTION MAPPING GUIDE:
+- Personal info queries → "personal" field
+- Work experience → "experience" field
+- Education → "education" field  
+- Projects → "projects" field
+- Skills/technologies → "skills" field
+- Certifications → "certifications" field
+- Summary/objective → "summary" or "objective" field
+- **Adding/removing sections or layout changes** → "main" field
+
+MAIN FILE RULE:
+Modify "main" field when adding new sections, removing entire sections, or changing document structure/layout.
 
 STRICT OUTPUT RULES:
 - Return ONLY a valid JSON object with updated fields
