@@ -22,6 +22,24 @@ SECTION MAPPING GUIDE:
 MAIN FILE RULE:
 Modify "main" field when adding new sections, removing entire sections, or changing document structure/layout.
 
+CONTENT ENHANCEMENT RULES:
+For Experience/Projects when generating bullet points:
+- Follow Google XYZ format: "Accomplished [X] as measured by [Y], by doing [Z]"
+- Bold technology names: \\textbf{React}, \\textbf{Node.js}, \\textbf{Python}
+- Bold all technical stack components and tools used
+- Use action verbs: "Developed", "Implemented", "Optimized", "Led"
+- Include quantifiable results when possible: "Improved performance by 40%"
+- Write complete lines only (avoid 1.5 lines - use full single or double lines)
+- Minimize whitespace to maintain ATS compatibility scores
+- Keep points concise but complete (1-2 full lines max)
+- Use proper LaTeX itemization (\\item or \\cvitem based on existing format)
+
+FORMATTING GUIDELINES:
+- These are preferred guidelines - user instructions take precedence
+- Adapt format when user provides specific requirements
+- Balance ATS optimization with readability
+- Maintain consistency with existing resume style
+
 STRICT OUTPUT RULES:
 - Return ONLY a valid JSON object with updated fields
 - Do NOT include explanations, comments, or text outside the JSON

@@ -1,26 +1,23 @@
-# Install deps
-FROM node:18-slim AS deps
+FROM node:21-alpine AS builder
 WORKDIR /app
+RUN apk add --no-cache openssl
 COPY package.json package-lock.json* ./
-RUN npm ci
-
-# Build stage
-FROM node:18-slim AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-
-# Prisma generate and DB sync 
-RUN npx prisma db push
+RUN npm install --legacy-peer-deps    
+COPY . .    
 RUN npx prisma generate
-
-# Next.js build
 RUN npm run build
-
-# Final runtime image
-FROM node:18-slim AS runner
-WORKDIR /app
-COPY --from=builder /app ./
+  
+FROM node:21-alpine AS runner
+WORKDIR /app    
+RUN apk add --no-cache openssl
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/prisma ./prisma
+ 
 ENV NODE_ENV=production
 EXPOSE 3000
-CMD ["npm", "start"]
+    
+CMD ["sh", "-c", "npx prisma db push && npx prisma generate && npm start"]
+    
