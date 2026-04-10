@@ -1,240 +1,164 @@
-import { Chat, Resume } from "@/generated/prisma";
-import { prepareLatexCode } from "@/lib/utils";
+import { Project } from "@/generated/prisma";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useState, useRef, useEffect } from "react";
+import { useEffect } from "react";
 
-export type FullResume = Resume & {
-    chat: Chat[];
+type FetchedProject = Project & {
+  status: string;
+  latex_code: string;
+  compiler: string;
 };
 
-const fetchResume = async (resumeId: string): Promise<FullResume> => {
-    try {
-        const res = await axios.get(`/api/get-resume?resumeId=${resumeId}`);
-        if (res.status !== 200 || !res.data) {
-            throw new Error("Failed to load resume: Invalid response");
-        }
-        return res.data;
-    } catch (error: any) {
-        const message =
-            error?.response?.data?.message ||
-            error?.message ||
-            "An unknown error occurred while fetching the resume.";
-        throw new Error(message);
-    }
+type ProjectWithPdf = {
+  project: FetchedProject;
+  pdfBlob: Blob | null;
 };
 
-const compilePdf = async (latexCode: string, compiler: string): Promise<Blob> => {
-    const res = await axios.post(
-        `/api/compile-resume`,
-        { latex_code: latexCode, compiler },
-        { responseType: "blob" }
+const fetchProjectPdf = async (projectId: string): Promise<Blob | null> => {
+  try {
+    const res = await axios.get(
+      `/api/get-project-pdf?projectId=${projectId}`,
+      {
+        responseType: "blob",
+      },
     );
 
-    const contentType = res.headers["content-type"];
-    if (contentType !== "application/pdf") {
-        throw new Error("Invalid content type received");
+    if (res.status !== 200) {
+      throw new Error("Failed to load project PDF");
     }
 
-    if (res.data.size === 0) {
-        throw new Error("Empty PDF blob received");
+    return res.data as Blob;
+  } catch (error: any) {
+    if (error?.response?.status === 404) {
+      return null;
     }
 
-    const arrayBuffer = await res.data.arrayBuffer();
-    const uint8Array = new Uint8Array(arrayBuffer);
-    const pdfHeader = String.fromCharCode(...uint8Array.slice(0, 4));
-
-    if (pdfHeader !== "%PDF") {
-        const text = new TextDecoder().decode(uint8Array);
-        console.error("Non-PDF response:", text);
-        throw new Error("Invalid PDF received");
-    }
-
-    return new Blob([res.data], { type: "application/pdf" });
+    const message =
+      error?.response?.data?.error ||
+      error?.message ||
+      "An unknown error occurred while loading the project PDF.";
+    throw new Error(message);
+  }
 };
 
-const generateLatexCode = async (query: string, resumeId: string, latex_code: string) => {
-    try {
-        const res = await axios.post(`/api/generate-latex-code`, {
-            latex_code,
-            resumeId,
-            query
-        }, {
-            timeout: 45000, // 45 seconds timeout
-        });
-
-        if (res.status !== 200 || !res.data.success) {
-            throw new Error(res.data?.error || "Failed to get response");
-        }
-
-        return res.data;
-    } catch (error: any) {
-        if (error.code === 'ECONNABORTED') {
-            throw new Error('Request timed out. The AI service is taking too long.');
-        }
-
-        throw error;
+const fetchProject = async (projectId: string): Promise<FetchedProject> => {
+  try {
+    const res = await axios.get(
+      `/api/get-project-by-id?projectId=${projectId}`,
+    );
+    if (res.status !== 200 || !res.data?.success || !res.data.project) {
+      throw new Error("Failed to load project data");
     }
-}
-
-
-export const useResumeWithPdf = (resumeId: string) => {
-    const [pdfUrl, setPdfUrl] = useState('');
-    const currentPdfUrlRef = useRef<string>('');
-
-    // fetch resume data
-    const resumeData = useQuery({
-        queryKey: ["resume", resumeId],
-        queryFn: () => fetchResume(resumeId),
-        enabled: !!resumeId
-    });
-
-    // cache pdf blobs 
-    const pdfBlob = useQuery({
-        queryKey: ["pdf", resumeData.data?.latex_code],
-        queryFn: () => compilePdf(prepareLatexCode(resumeData.data?.latex_code), resumeData.data?.compiler as string),
-        enabled: !!resumeData.data?.latex_code && !!resumeData.data?.compiler,
-        staleTime: 5 * 60 * 1000,
-        gcTime: 10 * 60 * 1000,
-        retry: 2
-    })
-
-    // Update PDF URL when blob changes
-    useEffect(() => {
-        if (pdfBlob.data) {
-            // Cleanup previous URL
-            if (currentPdfUrlRef.current) {
-                window.URL.revokeObjectURL(currentPdfUrlRef.current);
-            }
-
-            // Create new URL
-            const url = window.URL.createObjectURL(pdfBlob.data);
-            setPdfUrl(url);
-            currentPdfUrlRef.current = url;
-        }
-    }, [pdfBlob.data]);
-
-    // Cleanup on unmount
-    useEffect(() => {
-        return () => {
-            if (currentPdfUrlRef.current) {
-                window.URL.revokeObjectURL(currentPdfUrlRef.current);
-            }
-        };
-    }, []);
-
-    return {
-        resume: resumeData.data,
-        isLoadingResume: resumeData.isLoading,
-        resumeError: resumeData.error,
-        pdfUrl,
-        isCompilingPdf: pdfBlob.isLoading,
-        pdfError: pdfBlob.error,
-        refetchPdf: pdfBlob.refetch,
-        refetchResume: resumeData.refetch
-    };
-}
-
-// Separate mutations for manual compile and generate & compile
-export const useManualCompile = () => {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: async ({ latexCode, compiler }: { latexCode: string, compiler: string }) => {
-            return await compilePdf(prepareLatexCode(latexCode), compiler);
-        },
-        onSuccess: (pdfBlob, latexCode) => {
-            // Cache the compiled PDF
-            queryClient.setQueryData(['pdf', latexCode], pdfBlob);
-        },
-        onError: (error) => {
-            console.error("Manual compilation failed", error);
-        }
-    });
+    return res.data.project;
+  } catch (error: any) {
+    const message =
+      error?.response?.data?.error ||
+      error?.message ||
+      "An unknown error occurred while loading the project.";
+    throw new Error(message);
+  }
 };
 
-export const useGenerateAndCompile = (resumeId: string) => {
-    const queryClient = useQueryClient();
+const fetchProjectWithPdf = async (
+  projectId: string,
+): Promise<ProjectWithPdf> => {
+  const [project, pdfBlob] = await Promise.all([
+    fetchProject(projectId),
+    fetchProjectPdf(projectId),
+  ]);
+  return { project, pdfBlob };
+};
 
-    return useMutation({
-        mutationFn: async ({ queryText, latexCode, compiler }: { queryText: string, latexCode: any, compiler: string }) => {
-            if (!latexCode) throw new Error("Latex code is missing");
+const fetchProjectStatus = async (projectId: string): Promise<string> => {
+  try {
+    const res = await axios.get(
+      `/api/check-project-status?projectId=${projectId}`,
+    );
+    if (res.status !== 200 || !res.data?.success || !res.data.project) {
+      throw new Error("Failed to load project status");
+    }
+    return res.data.project.status;
+  } catch (error: any) {
+    const message =
+      error?.response?.data?.error ||
+      error?.message ||
+      "An unknown error occurred while loading the project status.";
+    throw new Error(message);
+  }
+};
 
-            // Generate new latex code
-            const result = await generateLatexCode(queryText, resumeId, latexCode);
+const generateProject = async ({
+  formData,
+  projectId,
+  latexCode,
+}: {
+  formData: any;
+  projectId: string;
+  latexCode: string;
+}) => {
+  const res = await axios.post("/api/generate-latex-and-compile", {
+    userData: formData,
+    projectId,
+    latexCode,
+  });
 
-            if (!result.success || !result?.data) {
-                throw new Error("Failed to generate latex code");
-            }
+  if (res.status !== 200 || !res.data?.success) {
+    throw new Error(res.data?.error || "Failed to start compilation");
+  }
 
-            // Compile the new latex code
-            const pdfBlob = await compilePdf(prepareLatexCode(result.data), compiler);
+  return res.data;
+};
 
-            return {
-                latexCode: result.data,
-                pdfBlob,
-                success: true,
-                originalQuery: queryText,
-            };
-        },
-        onMutate: async ({ queryText }) => {
-            // Cancel outgoing queries to prevent any race conditions
-            await queryClient.cancelQueries({
-                queryKey: ["resume", resumeId]
-            });
+export const useProject = (projectId: string) => {
+  return useQuery<ProjectWithPdf, Error>({
+    queryKey: ["project", projectId],
+    queryFn: () => fetchProjectWithPdf(projectId),
+    enabled: !!projectId,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+};
 
-            // Get current resume data
-            const previousResumeData = queryClient.getQueryData<FullResume>(['resume', resumeId]);
+export const useProjectStatus = (projectId: string, enabled: boolean) => {
+  const queryClient = useQueryClient();
 
-            if (previousResumeData) {
-                // create dummy chat messages for optimistic updates
-                const userMessage: Chat = {
-                    id: `temp-user-${Date.now()}`,
-                    content: queryText,
-                    role: 'Human',
-                    resumeId: resumeId,
-                    createdAt: new Date(),
-                    updatedAt: new Date()
-                }
+  const query = useQuery<string, Error>({
+    queryKey: ["project-status", projectId],
+    queryFn: () => fetchProjectStatus(projectId),
+    enabled: enabled && !!projectId,
+    staleTime: 0,
+    refetchOnWindowFocus: false,
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      return data === "Processing" ? 5000 : false;
+    },
+  });
 
-                const botMessage: Chat = {
-                    id: `temp-user-${Date.now() + 1000}`,
-                    content: "Making changes......",
-                    role: 'Bot',
-                    resumeId: resumeId,
-                    createdAt: new Date(),
-                    updatedAt: new Date()
-                }
+  // ✅ replace onSuccess with useEffect
+  useEffect(() => {
+    if (query.data && query.data !== "Processing") {
+      queryClient.invalidateQueries({ queryKey: ["project", projectId] });
+    }
+  }, [query.data, projectId, queryClient]);
 
-                queryClient.setQueryData(['resume', resumeId], {
-                    ...previousResumeData,
-                    chat: [
-                        ...previousResumeData.chat,
-                        userMessage,
-                        botMessage
-                    ]
-                });
+  return query;
+};
 
-            }
+export const useGenerateAndCompile = () => {
+  const queryClient = useQueryClient();
 
-            // Return context for potential rollback
-            return { previousResumeData };
-        },
-        // Error - rollback optimistic updates
-        onError: (error, variables, context) => {
-            // Rollback to previous state
-            if (context?.previousResumeData) {
-                queryClient.setQueryData(['resume', resumeId], context.previousResumeData);
-            }
-
-            console.error("Generate and compile failed", error);
-        },
-
-        // Always runs after success or error
-        onSettled: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['resume', resumeId]
-            })
-        }
-    });
+  return useMutation({
+    mutationFn: generateProject,
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["project", variables.projectId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["project-status", variables.projectId],
+      });
+    },
+    onError: (error) => {
+      console.error("Generate and compile failed", error);
+    },
+  });
 };

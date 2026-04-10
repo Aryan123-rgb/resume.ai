@@ -1,58 +1,43 @@
-import path from "path";
-import { exec } from "child_process";
-import fs from "fs/promises";
+import { Sandbox } from "e2b";
 
-// simply accepts the latex code and returns the pdf blob
-export const generatePDF = async (latex_code: string, compiler: string) => {
-    const folderPath = path.join(process.cwd(), "tmp");
-    const texFilePath = path.join(folderPath, "resume.tex");
-    const pdfPath = path.join(process.cwd(), 'tmp', 'resume.pdf');
+export const generatePDF = async (
+  latex_code: string,
+  compiler: string = "pdflatex",
+): Promise<Buffer> => {
+  const sandbox = await Sandbox.create("pdflatex-sandbox-dev");
 
-    await fs.mkdir(folderPath, { recursive: true });
-    await fs.writeFile(texFilePath, latex_code);
+  try {
+    const texFilePath = "/home/user/resume.tex";
+    const pdfPath = "/home/user/resume.pdf";
 
-    // remove the pdf if already exists
-    await fs.rm(pdfPath, { force: true });
+    await sandbox.files.write(texFilePath, latex_code);
 
-    // console.log("latex_code from latex.ts", latex_code);
+    // Run twice (important for references, formatting, etc.)
+    for (let i = 0; i < 2; i++) {
+      const result = await sandbox.commands.run(
+        `${compiler} -interaction=nonstopmode -halt-on-error ${texFilePath}`,
+        { cwd: "/home/user" },
+      );
 
-    // Make folderPath POSIX for Docker mount (important on Windows)
-    const folderPathPosix = folderPath.replace(/\\/g, "/");
+      if (process.exitCode !== 0) {
+        console.error("LaTeX Error Output:", result.stdout);
+        throw new Error("LaTeX compilation failed: ${result.stdout.slice(-500)}`");
+      }
+    }
 
-    const dockercmd = [
-        "docker run --rm",
-        `-v "${folderPathPosix}:/data"`,
-        "blang/latex",
-        `${compiler} -interaction=nonstopmode resume.tex`
-    ].join(" ");
+    // Check if PDF exists
+    const exists = await sandbox.files.exists(pdfPath);
+    if (!exists) {
+      throw new Error("PDF not generated");
+    }
 
-    await new Promise<void>((resolve, reject) => {
-        console.log("executing ", dockercmd);
-        exec(dockercmd, { cwd: folderPath }, async (err, stdout, stderr) => {
-            const pdfExists = await fs.access(pdfPath).then(() => true).catch(() => false);
-            console.log("pdfExists", pdfExists);
+    const pdfData = await sandbox.files.read(pdfPath, {format:"bytes"});
+    const buffer = Buffer.from(pdfData);
 
-            if (!pdfExists) {
-                if (compiler == 'pdflatex') {
-                    console.error("Docker execution failed:", err);
-                    console.error("stderr:", stderr);
-                    console.error("stdout:", stdout);
-                }
+if (!buffer || buffer.length === 0) throw new Error("Empty PDF generated");
 
-                let errorMessage = "Failed to compile the LaTeX code.";
-
-                return reject(new Error(errorMessage));
-            }
-
-            resolve();
-        });
-
-    });
-
-    // await fs.rm(texFilePath, { force: true }).catch(() => { });
-    // await fs.rm(pdfPath, { force: true }).catch(() => { });
-
-    const pdfBuffer = await fs.readFile(pdfPath);
-
-    return pdfBuffer;
+    return buffer;
+  } finally {
+    await sandbox.kill();
+  }
 };

@@ -14,14 +14,14 @@ import {
   Briefcase,
   GraduationCap,
 } from "lucide-react";
-import { Resume } from "@/generated/prisma";
+import { Project } from "@/generated/prisma";
 import Link from "next/link";
 
-interface UserResumesProps {
-  userResumes: Resume[];
+interface UserProjectProps {
+  userProjects: Project[];
 }
 
-export default function UserResumes({ userResumes }: UserResumesProps) {
+export default function UserResumes({ userProjects }: UserProjectProps) {
   return (
     <section>
       <div className="flex items-center justify-between mb-8">
@@ -33,11 +33,11 @@ export default function UserResumes({ userResumes }: UserResumesProps) {
         </div>
       </div>
 
-      {userResumes.length > 0 ? (
+      {userProjects.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {userResumes.map((resume) => (
+          {userProjects.map((project) => (
             <Card
-              key={resume.id}
+              key={project.id}
               className="group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-2 border-border/50 dark:border-border/30 hover:border-primary/30 dark:hover:border-primary/40"
             >
               <CardHeader className="p-0">
@@ -74,21 +74,21 @@ export default function UserResumes({ userResumes }: UserResumesProps) {
 
               <CardContent className="p-6">
                 <div className="mb-3">
-                  <CardTitle className="text-lg mb-1">{resume.name}</CardTitle>
+                  <CardTitle className="text-lg mb-1">{project.name}</CardTitle>
                   <p className="text-sm text-muted-foreground">
-                    Description: {resume.description}
+                    Description: {project.description}
                   </p>
                 </div>
 
                 <div className="flex items-center text-xs text-muted-foreground mb-4">
                   <Calendar className="h-3 w-3 mr-1" />
                   Last modified:{" "}
-                  {new Date(resume.updatedAt).toLocaleDateString()}
+                  {new Date(project.updatedAt).toLocaleDateString()}
                 </div>
 
                 <div className="flex gap-2">
                   <Button asChild size="sm" className="flex-1">
-                    <Link href={`/resume-editor/${resume.id}`}>
+                    <Link href={`/resume-editor/${project.id}`}>
                       <Edit className="h-4 w-4 mr-2" />
                       Edit
                     </Link>

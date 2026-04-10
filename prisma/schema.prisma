@@ -16,31 +16,25 @@ datasource db {
 
 // will be using clerk for storing user's data
 
-model Resume {
+model Project {
   id          String     @id @default(uuid())
   userId      String
   latex_code  Json 
+  pdf         Bytes?
   name        String
   description String
+  status      Status
   compiler    Compiler
-  chat        Chat[]
+  userData    Json?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 }
 
-model Chat {
-  id        String   @id @default(uuid())
-  resumeId  String
-  resume    Resume   @relation(references: [id], fields: [resumeId], onDelete: Cascade)
-  role      Role
-  content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-enum Role {
-  Bot
-  Human
+enum Status {
+  pending
+  Processing 
+  Completed 
+  Failed 
 }
 
 enum Compiler {

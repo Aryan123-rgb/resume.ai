@@ -1,6 +1,9 @@
 "use client";
 
+import { startTransition, useState } from "react";
 import { Loader2, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { createNewProject } from "@/action";
 import { Button } from "../../../components/ui/button";
 import {
   Dialog,
@@ -13,9 +16,6 @@ import {
 } from "../../../components/ui/dialog";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
-import { useState } from "react";
-import { createNewProject } from "@/app/action";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 interface CreateNewProjectButtonProps {
@@ -27,30 +27,37 @@ export default function CreateNewProjectButton({
 }: CreateNewProjectButtonProps) {
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
 
   const handleCreateNewProject = async () => {
-    setLoading(true);
     if (!projectName.trim() || !description.trim()) {
-      setLoading(false);
       return;
     }
+
+    setErrorMessage(null);
+    setIsLoading(true);
+
     try {
-      const res = await createNewProject({
-        name: projectName,
-        description,
-        resumeType,
+      const projectId = await createNewProject({
+        templateName: resumeType,
+        name: projectName.trim(),
+        description: description.trim(),
       });
-      if (!res.success) {
-        setLoading(false);
-        return;
-      }
-      router.replace(`/resume-editor/${res.resumeId}`);
-    } catch (e) {
-      console.log("Error occured while creating new project", e);
+
+      startTransition(() => {
+        router.push(`/resume-editor/${projectId}`);
+      });
+    } catch (error: any) {
+      console.error(error);
+      setErrorMessage(error?.message || "Failed to create project");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  const isSubmitting = isLoading;
 
   return (
     <Dialog>
@@ -110,11 +117,14 @@ export default function CreateNewProjectButton({
               </Button>
             </DialogClose>
             <Button
-              disabled={loading}
+              disabled={isSubmitting}
               onClick={handleCreateNewProject}
-              className={cn("px-6", loading && "opacity-50 cursor-not-allowed")}
+              className={cn(
+                "px-6",
+                isSubmitting && "opacity-50 cursor-not-allowed",
+              )}
             >
-              {loading ? (
+              {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Creating...
@@ -123,6 +133,11 @@ export default function CreateNewProjectButton({
                 "Create Project"
               )}
             </Button>
+          {errorMessage ? (
+            <div className="text-sm text-destructive pt-2">
+              {errorMessage}
+            </div>
+          ) : null}
           </div>
         </div>
       </DialogContent>

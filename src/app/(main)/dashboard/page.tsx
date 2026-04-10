@@ -8,33 +8,33 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Eye, User, Briefcase, GraduationCap } from "lucide-react";
-import UserResumes from "@/app/(main)/resume-builder/UserResumes";
+import UserResumes from "@/app/(main)/dashboard/UserResumes";
 import CreateNewProjectButton from "./CreateNewProjectButton";
 import prismaClient from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { ResumePreview } from "./ResumePreview";
 
 const resumeTemplates = [
-  {
-    id: 1,
-    name: "Modern Professional",
-    description:
-      "Clean and contemporary design perfect for tech and business roles",
-    category: "Professional",
-    color: "blue",
-    preview: "/api/placeholder/300/400",
-    features: ["ATS Optimized", "Modern Layout", "Skills Section"],
-  },
-  {
-    id: 2,
-    name: "Creative Designer",
-    description:
-      "Eye-catching design ideal for creative professionals and designers",
-    category: "Creative",
-    color: "purple",
-    preview: "/api/placeholder/300/400",
-    features: ["Visual Appeal", "Portfolio Section", "Color Accents"],
-  },
+  // {
+  //   id: 1,
+  //   name: "Modern Professional",
+  //   description:
+  //     "Clean and contemporary design perfect for tech and business roles",
+  //   category: "Professional",
+  //   color: "blue",
+  //   preview: "/api/placeholder/300/400",
+  //   features: ["ATS Optimized", "Modern Layout", "Skills Section"],
+  // },
+  // {
+  //   id: 2,
+  //   name: "Creative Designer",
+  //   description:
+  //     "Eye-catching design ideal for creative professionals and designers",
+  //   category: "Creative",
+  //   color: "purple",
+  //   preview: "/api/placeholder/300/400",
+  //   features: ["Visual Appeal", "Portfolio Section", "Color Accents"],
+  // },
   // {
   //   id: 3,
   //   name: "Executive Classic",
@@ -97,7 +97,7 @@ export default async function ResumeBuilder() {
     throw new Error("Unauthenticated request");
   }
 
-  const resume = await prismaClient.resume.findMany({
+  const projects = await prismaClient.project.findMany({
     where: {
       userId,
     },
@@ -198,7 +198,7 @@ export default async function ResumeBuilder() {
       </section>
 
       {/* User Created Resumes Section */}
-      <UserResumes userResumes={resume} />
+      <UserResumes userProjects={projects} />
     </main>
   );
 }
