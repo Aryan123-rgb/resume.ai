@@ -33,12 +33,19 @@ export function Navbar() {
             <ThemeToggle />
             {isLoaded && isSignedIn ? (
               <>
-                {" "}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-sm font-medium text-foreground/80 hover:text-blue-600 dark:text-foreground/80 dark:hover:text-blue-400"
+                  asChild
+                >
+                  <Link href="/dashboard">Dashboard</Link>
+                </Button>
                 <UserButton
                   appearance={{
                     baseTheme: theme == 'dark' ? dark : undefined,
                   }}
-                />{" "}
+                />
               </>
             ) : (
               <>
@@ -102,25 +109,40 @@ export function Navbar() {
               </nav>
 
               <div className="pt-4 border-t border-gray-200/80 dark:border-gray-800/80 space-y-3">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-start text-foreground/80 hover:text-blue-600 dark:text-foreground/80 dark:hover:text-blue-400"
-                  asChild
-                >
-                  <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                    Login
-                  </Link>
-                </Button>
-                <Button
-                  size="sm"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                  asChild
-                >
-                  <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
-                    Sign Up
-                  </Link>
-                </Button>
+                {isLoaded && isSignedIn ? (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start text-foreground/80 hover:text-blue-600 dark:text-foreground/80 dark:hover:text-blue-400"
+                    asChild
+                  >
+                    <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                      Dashboard
+                    </Link>
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start text-foreground/80 hover:text-blue-600 dark:text-foreground/80 dark:hover:text-blue-400"
+                      asChild
+                    >
+                      <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                        Login
+                      </Link>
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                      asChild
+                    >
+                      <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
+                        Sign Up
+                      </Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>

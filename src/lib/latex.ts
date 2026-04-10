@@ -14,14 +14,23 @@ export const generatePDF = async (
 
     // Run twice (important for references, formatting, etc.)
     for (let i = 0; i < 2; i++) {
-      const result = await sandbox.commands.run(
-        `${compiler} -interaction=nonstopmode -halt-on-error ${texFilePath}`,
-        { cwd: "/home/user" },
-      );
+      try {
+        const result = await sandbox.commands.run(
+          `${compiler} -interaction=nonstopmode -halt-on-error ${texFilePath}`,
+          { cwd: "/home/user" },
+        );
+        console.log("SUCCESS STDOUT:", result.stdout);
+      } catch (err: any) {
+        // E2B throws CommandExitError. We extract the logs from it.
+        console.error("LATEX FAILED!");
+        console.error("EXIT CODE:", err.exitCode);
+        console.error("STDOUT:", err.stdout);
+        console.error("STDERR:", err.stderr);
 
-      if (process.exitCode !== 0) {
-        console.error("LaTeX Error Output:", result.stdout);
-        throw new Error("LaTeX compilation failed: ${result.stdout.slice(-500)}`");
+        // Throw a descriptive error so Inngest shows it in the dashboard
+        throw new Error(
+          `LaTeX Error: ${err.stdout.split("\n").slice(-10).join("\n")}`,
+        );
       }
     }
 
@@ -31,10 +40,10 @@ export const generatePDF = async (
       throw new Error("PDF not generated");
     }
 
-    const pdfData = await sandbox.files.read(pdfPath, {format:"bytes"});
+    const pdfData = await sandbox.files.read(pdfPath, { format: "bytes" });
     const buffer = Buffer.from(pdfData);
 
-if (!buffer || buffer.length === 0) throw new Error("Empty PDF generated");
+    if (!buffer || buffer.length === 0) throw new Error("Empty PDF generated");
 
     return buffer;
   } finally {

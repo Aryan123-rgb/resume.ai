@@ -52,8 +52,6 @@ export default function CreateNewProjectButton({
     } catch (error: any) {
       console.error(error);
       setErrorMessage(error?.message || "Failed to create project");
-    } finally {
-      setIsLoading(false);
     }
   };
 

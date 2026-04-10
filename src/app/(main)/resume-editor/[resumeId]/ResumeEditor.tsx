@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Eye, FileText, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/lib/useToast";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -39,9 +40,44 @@ export default function ResumeEditor({ resumeId }: { resumeId: string }) {
   const { mutate: generateAndCompile, isPending: isCompilePending } =
     useGenerateAndCompile();
 
+  const currentStatus = projectStatus ?? project?.status;
+  const isStatusProcessing = currentStatus === "Processing";
+  const isCompileEnabled = !!project?.latex_code && !isStatusProcessing;
+
+  const statusDotClass = currentStatus
+    ? currentStatus === "Processing"
+      ? "bg-yellow-500 shadow-[0_0_12px_rgba(234,179,8,0.45)]"
+      : currentStatus.toLowerCase().includes("fail")
+      ? "bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.45)]"
+      : "bg-emerald-500 shadow-[0_0_12px_rgba(34,197,94,0.45)]"
+    : "bg-transparent";
+
+  const statusBadgeClass = currentStatus
+    ? currentStatus === "Processing"
+      ? "bg-yellow-100 text-yellow-800"
+      : currentStatus.toLowerCase().includes("fail")
+      ? "bg-red-100 text-red-800"
+      : "bg-emerald-100 text-emerald-800"
+    : "bg-muted text-muted-foreground";
+
+  const downloadLatex = () => {
+    if (!project?.latex_code) {
+      showError("No LaTeX code available to download.");
+      return;
+    }
+
+    const blob = new Blob([project.latex_code], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "main.tex";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const pdfUrl = project?.id && project?.status === "Completed"
-  ? `/api/get-project-pdf?projectId=${project.id}`
-  : "";
+    ? `/api/get-project-pdf?projectId=${project.id}`
+    : "";
 
   useEffect(() => {
     if (projectStatus && projectStatus !== "Processing") {
@@ -84,32 +120,45 @@ export default function ResumeEditor({ resumeId }: { resumeId: string }) {
         <MultiStepForm
           onReadyToCompile={handleReadyToCompile}
           isSubmitting={isCompilePending}
-          isCompileEnabled={!!project?.latex_code}
+          isCompileEnabled={isCompileEnabled}
         />
       </div>
 
       <div className="w-1/2 h-full overflow-auto">
         <div className="w-full h-full bg-secondary/30">
           <div className="h-full flex flex-col">
-            <div className="border-b border-border p-4 bg-background flex items-center justify-between">
+            <div className="border-b border-border p-4 bg-background flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
                   <Eye className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold">Resume Preview</h2>
-                  <p className="text-sm text-muted-foreground">
-                    {project?.status
-                      ? `Status: ${project.status}`
-                      : "See how your resume will look"}
+                  <div className="flex flex-col gap-2">
+                    <h2 className="text-lg font-semibold">Resume Preview</h2>
+                    {currentStatus ? (
+                      <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${statusBadgeClass}`}>
+                        <span className={`h-2.5 w-2.5 rounded-full ${statusDotClass}`} />
+                        {currentStatus}
+                      </div>
+                    ) : null}
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {currentStatus ? `Current status: ${currentStatus}` : "See how your resume will look"}
                   </p>
                 </div>
               </div>
-              {projectStatus && projectStatus !== "Processing" && (
-                <div className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
-                  {projectStatus}
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                {project?.latex_code ? (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={downloadLatex}
+                    className="text-sm"
+                  >
+                    Download LaTeX
+                  </Button>
+                ) : null}
+              </div>
             </div>
 
             <div className="flex-1 overflow-auto">

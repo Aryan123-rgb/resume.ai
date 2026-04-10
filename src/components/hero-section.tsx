@@ -37,7 +37,7 @@ export function HeroSection() {
           {/* CTA buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0">
             <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 w-full sm:w-auto" asChild>
-              <Link href="/resume-builder">
+              <Link href="/dashboard">
                 Start Building <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Link>
             </Button>
@@ -47,7 +47,7 @@ export function HeroSection() {
               className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 w-full sm:w-auto bg-transparent"
               asChild
             >
-              <Link href="/resume-builder">
+              <Link href="/dashboard">
                 View Templates <Eye className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Link>
             </Button>

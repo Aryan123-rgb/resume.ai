@@ -5,6 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import prismaClient from "@/lib/db";
 import fs from "fs/promises";
 import path from "path";
+import { resumeSchema } from "./app/(main)/resume-editor/[resumeId]/forms/schema";
 
 const createProjectSchema = z.object({
   templateName: z.string().min(1, "Template Name is required"),
@@ -12,7 +13,7 @@ const createProjectSchema = z.object({
   description: z.string().optional().default(""),
 });
 
-export async function createNewProject(payload: unknown) {
+export async function createNewProject(payload: any) {
 
   const validatedData = createProjectSchema.parse(payload);
   const user = await auth();
@@ -44,12 +45,12 @@ export async function createNewProject(payload: unknown) {
       compiler: "pdflatex",
       userData: {},
     },
-  } as any);
+  });
 
   return project.id;
 }
 
-export async function syncUserData(projectId: string, userData: unknown) {
+export async function syncUserData(projectId: string, userData: any) {
   const user = await auth();
   const userId = user?.userId;
 
@@ -57,8 +58,10 @@ export async function syncUserData(projectId: string, userData: unknown) {
     throw new Error("Unauthorized");
   }
 
+  const validatedData = resumeSchema.parse(userData)
+
   await prismaClient.project.update({
     where: { id: projectId },
-    data: { userData },
-  } as any);
+    data: { userData: validatedData },
+  });
 }
