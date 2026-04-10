@@ -27,10 +27,11 @@ export default function ResumeEditor({ resumeId }: { resumeId: string }) {
     refetch: refetchProject,
   } = useProject(resumeId);
 
-  const project = data?.project;
+  const project = data;
   const isLoadingProjectData = (isLoadingProject || isFetchingProject) && !project;
 
   const [polling, setPolling] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   const {
     data: projectStatus,
@@ -46,34 +47,20 @@ export default function ResumeEditor({ resumeId }: { resumeId: string }) {
 
   const statusDotClass = currentStatus
     ? currentStatus === "Processing"
-      ? "bg-yellow-500 shadow-[0_0_12px_rgba(234,179,8,0.45)]"
+      ? "bg-yellow-500 animate-pulse shadow-[0_0_12px_rgba(234,179,8,0.8)]"
       : currentStatus.toLowerCase().includes("fail")
-      ? "bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.45)]"
-      : "bg-emerald-500 shadow-[0_0_12px_rgba(34,197,94,0.45)]"
+      ? "bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.8)]"
+      : "bg-emerald-500 shadow-[0_0_12px_rgba(34,197,94,0.8)]"
     : "bg-transparent";
 
   const statusBadgeClass = currentStatus
     ? currentStatus === "Processing"
-      ? "bg-yellow-100 text-yellow-800"
+      ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 border border-yellow-500/20 shadow-sm"
       : currentStatus.toLowerCase().includes("fail")
-      ? "bg-red-100 text-red-800"
-      : "bg-emerald-100 text-emerald-800"
-    : "bg-muted text-muted-foreground";
+      ? "bg-red-500/10 text-red-600 dark:text-red-500 border border-red-500/20 shadow-sm"
+      : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-500 border border-emerald-500/20 shadow-sm"
+    : "bg-muted text-muted-foreground border border-transparent";
 
-  const downloadLatex = () => {
-    if (!project?.latex_code) {
-      showError("No LaTeX code available to download.");
-      return;
-    }
-
-    const blob = new Blob([project.latex_code], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "main.tex";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
 
   const pdfUrl = project?.id && project?.status === "Completed"
     ? `/api/get-project-pdf?projectId=${project.id}`
@@ -115,8 +102,24 @@ export default function ResumeEditor({ resumeId }: { resumeId: string }) {
   const errorMessage = projectError?.message || statusError?.message;
 
   return (
-    <main className="flex h-[calc(100vh-4rem)]">
-      <div className="w-1/2 h-full border-r border-gray-200 dark:border-gray-700 bg-background overflow-hidden relative">
+    <main className="flex flex-col lg:flex-row h-[calc(100vh-4rem)]">
+      {/* Mobile Toggle Tabs */}
+      <div className="lg:hidden flex border-b bg-background shrink-0">
+        <button
+          onClick={() => setShowPreview(false)}
+          className={`flex-1 py-3 text-sm font-medium transition-colors ${!showPreview ? 'border-b-2 border-primary text-primary' : 'text-muted-foreground hover:bg-muted/50'}`}
+        >
+          Form Editor
+        </button>
+        <button
+          onClick={() => setShowPreview(true)}
+          className={`flex-1 py-3 text-sm font-medium transition-colors ${showPreview ? 'border-b-2 border-primary text-primary' : 'text-muted-foreground hover:bg-muted/50'}`}
+        >
+          Resume Preview
+        </button>
+      </div>
+
+      <div className={`w-full lg:w-1/2 flex-1 lg:h-full border-r border-gray-200 dark:border-gray-700 bg-background overflow-hidden relative ${showPreview ? 'hidden lg:block' : 'block'}`}>
         <MultiStepForm
           onReadyToCompile={handleReadyToCompile}
           isSubmitting={isCompilePending}
@@ -124,7 +127,7 @@ export default function ResumeEditor({ resumeId }: { resumeId: string }) {
         />
       </div>
 
-      <div className="w-1/2 h-full overflow-auto">
+      <div className={`w-full lg:w-1/2 flex-1 lg:h-full overflow-auto ${showPreview ? 'block' : 'hidden lg:block'}`}>
         <div className="w-full h-full bg-secondary/30">
           <div className="h-full flex flex-col">
             <div className="border-b border-border p-4 bg-background flex items-center justify-between gap-4">
@@ -152,10 +155,15 @@ export default function ResumeEditor({ resumeId }: { resumeId: string }) {
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={downloadLatex}
-                    className="text-sm"
+                    asChild
+                    className="text-sm hover:bg-secondary/80 transition-colors"
                   >
-                    Download LaTeX
+                    <a
+                      href={`data:text/plain;charset=utf-8,${encodeURIComponent(project.latex_code)}`}
+                      download="main.tex"
+                    >
+                      Download LaTeX
+                    </a>
                   </Button>
                 ) : null}
               </div>

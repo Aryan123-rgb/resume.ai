@@ -1,86 +1,44 @@
 import { Project } from "@/generated/prisma";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import { useEffect } from "react";
+import { getProjectById, checkProjectStatus, generateProjectAndCompileAction } from "@/action";
 
-type FetchedProject = Project & {
+export type FetchedProject = Project & {
   status: string;
   latex_code: string;
   compiler: string;
+  userData: any;
 };
 
-type ProjectWithPdf = {
-  project: FetchedProject;
-  pdfBlob: Blob | null;
-};
-
-const fetchProjectPdf = async (projectId: string): Promise<Blob | null> => {
-  try {
-    const res = await axios.get(
-      `/api/get-project-pdf?projectId=${projectId}`,
-      {
-        responseType: "blob",
-      },
-    );
-
-    if (res.status !== 200) {
-      throw new Error("Failed to load project PDF");
-    }
-
-    return res.data as Blob;
-  } catch (error: any) {
-    if (error?.response?.status === 404) {
-      return null;
-    }
-
-    const message =
-      error?.response?.data?.error ||
-      error?.message ||
-      "An unknown error occurred while loading the project PDF.";
-    throw new Error(message);
-  }
-};
 
 const fetchProject = async (projectId: string): Promise<FetchedProject> => {
   try {
-    const res = await axios.get(
-      `/api/get-project-by-id?projectId=${projectId}`,
-    );
-    if (res.status !== 200 || !res.data?.success || !res.data.project) {
-      throw new Error("Failed to load project data");
-    }
-    return res.data.project;
+    const project = await getProjectById(projectId);
+    return project as FetchedProject;
   } catch (error: any) {
     const message =
-      error?.response?.data?.error ||
       error?.message ||
       "An unknown error occurred while loading the project.";
     throw new Error(message);
   }
 };
 
-const fetchProjectWithPdf = async (
-  projectId: string,
-): Promise<ProjectWithPdf> => {
-  const [project, pdfBlob] = await Promise.all([
-    fetchProject(projectId),
-    fetchProjectPdf(projectId),
-  ]);
-  return { project, pdfBlob };
+export const useProject = (projectId: string) => {
+  return useQuery<FetchedProject, Error>({
+    queryKey: ["project", projectId],
+    queryFn: () => fetchProject(projectId),
+    enabled: !!projectId,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 };
 
 const fetchProjectStatus = async (projectId: string): Promise<string> => {
   try {
-    const res = await axios.get(
-      `/api/check-project-status?projectId=${projectId}`,
-    );
-    if (res.status !== 200 || !res.data?.success || !res.data.project) {
-      throw new Error("Failed to load project status");
-    }
-    return res.data.project.status;
+    const status = await checkProjectStatus(projectId);
+    return status;
   } catch (error: any) {
     const message =
-      error?.response?.data?.error ||
       error?.message ||
       "An unknown error occurred while loading the project status.";
     throw new Error(message);
@@ -96,28 +54,20 @@ const generateProject = async ({
   projectId: string;
   latexCode: string;
 }) => {
-  const res = await axios.post("/api/generate-latex-and-compile", {
+  const data = await generateProjectAndCompileAction({
     userData: formData,
     projectId,
     latexCode,
   });
 
-  if (res.status !== 200 || !res.data?.success) {
-    throw new Error(res.data?.error || "Failed to start compilation");
+  if (!data?.success) {
+    throw new Error("Failed to start compilation");
   }
 
-  return res.data;
+  return data;
 };
 
-export const useProject = (projectId: string) => {
-  return useQuery<ProjectWithPdf, Error>({
-    queryKey: ["project", projectId],
-    queryFn: () => fetchProjectWithPdf(projectId),
-    enabled: !!projectId,
-    staleTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
-};
+
 
 export const useProjectStatus = (projectId: string, enabled: boolean) => {
   const queryClient = useQueryClient();

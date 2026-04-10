@@ -25,7 +25,12 @@ model Project {
   description String
   status      Status
   compiler    Compiler
-  userData    Json?
+  basics       Json?
+  education    Json?
+  experience   Json?
+  projectsData Json?
+  skills       Json?
+  achievements Json?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 }
