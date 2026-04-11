@@ -10,6 +10,19 @@ resume.ai lets you create a resume by filling out a form. Under the hood, a Groq
 
 ---
 
+## Screenshots
+
+**Homepage**
+![Homepage](./public/homepage.png)
+
+**Dashboard — browse & create projects**
+![Dashboard](./public/dashboard.png)
+
+**Resume form editor**
+![Form Editor](./public/formpage.png)
+
+---
+
 ## Tech Stack
 
 | Tool | Purpose |
@@ -88,6 +101,8 @@ The app will be available at `http://localhost:3000`.
 ---
 
 ## Architecture Overview
+
+![Architecture Diagram](./public/resume.ai.png)
 
 The core workflow is fully asynchronous:
 
