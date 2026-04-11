@@ -8,7 +8,7 @@ import path from "path";
 import { resumeSchema } from "./app/(main)/resume-editor/[resumeId]/forms/schema";
 import { inngest } from "@/inngest/client";
 
-export const generateLatexSchema = z.object({
+const generateLatexSchema = z.object({
   userData: resumeSchema,
   projectId: z.string().uuid(),
   latexCode: z.string().min(1),

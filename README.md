@@ -1,106 +1,125 @@
-# Next.js 15 Starter with Prisma, Clerk & shadcn/ui
+# resume.ai
 
-A modern Next.js 15 starter template featuring:
+An AI-powered resume builder that generates and compiles professional LaTeX resumes from structured user input — entirely in the browser.
 
-- 🚀 Next.js 15 with App Router
-- 🔐 Authentication with Clerk
-- 💾 Database with Prisma ORM (PostgreSQL)
-- 🎨 Styling with Tailwind CSS and shadcn/ui
-- 🌓 Dark/Light mode with next-themes
-- 🛡️ Protected routes with middleware
+---
 
-## 🚀 Getting Started
+## What it does
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/nextjs15-prisma-clerk-startercode.git
-   cd nextjs15-prisma-clerk-startercode
-   ```
+resume.ai lets you create a resume by filling out a form. Under the hood, a Groq LLM rewrites a LaTeX template using your data, compiles it to PDF inside a remote sandbox, and renders the result live in the editor — no local LaTeX installation required.
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   # or
-   yarn
-   # or
-   pnpm install
-   ```
+---
 
-3. **Set up environment variables**
-   Create a `.env.local` file in the root directory and add the following:
+## Tech Stack
 
-   ```env
-   # Database
-   DATABASE_URL="postgresql://postgres:yourpassword@localhost:5432/yourdbname"
+| Tool | Purpose |
+|------|---------|
+| Next.js 15 (App Router) | Frontend + API routes |
+| Clerk | Authentication |
+| Inngest | Background job orchestration |
+| Groq + LangChain | LLM-based LaTeX generation |
+| E2B Code Interpreter | Remote sandboxed PDF compilation |
+| Neon Postgres + Prisma | Database and ORM |
+| React Query | Client-side data fetching and caching |
 
-   # Clerk
-   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_publishable_key
-   CLERK_SECRET_KEY=your_secret_key
-   
-   # Optional: Custom auth paths
-   NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-   NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-   ```
+---
 
-4. **Set up the database**
-   ```bash
-   npx prisma db push
-   ```
+## Getting Started
 
-5. **Run the development server**
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   # or
-   pnpm dev
-   ```
+### Prerequisites
 
-   Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Node.js 18+
+- A [Neon](https://neon.tech) Postgres database
+- A [Clerk](https://clerk.dev) application
+- A [Groq](https://console.groq.com) API key
+- An [E2B](https://e2b.dev) API key
+- An [Inngest](https://inngest.com) account (or local dev server)
 
-## 📁 Project Structure
+### Installation
 
-```
-.
-├── prisma/
-│   └── schema.prisma     # Database schema
-├── src/
-│   ├── app/
-│   │   ├── (auth)/       # Authentication pages
-│   │   ├── (main)/       # Protected routes
-│   │   │   └── dashboard # Dashboard page (protected)
-│   │   ├── layout.tsx    # Root layout
-│   │   └── page.tsx      # Home page
-│   ├── components/       # Reusable components
-│   ├── lib/              # Utility functions
-│   └── middleware.ts     # Authentication middleware
-└── public/               # Static files
+```bash
+git clone https://github.com/your-username/resume.ai.git
+cd resume.ai
+npm install
 ```
 
-## 🔧 Tech Stack
+### Environment Variables
 
-- **Framework**: [Next.js 15](https://nextjs.org/)
-- **Authentication**: [Clerk](https://clerk.com/)
-- **Database**: [PostgreSQL](https://www.postgresql.org/) + [Prisma](https://www.prisma.io/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/)
-- **Theming**: [next-themes](https://github.com/pacocoursey/next-themes)
-- **TypeScript**: For type safety
+Create a `.env.local` file in the project root:
 
-## 🌓 Dark Mode
+```env
+# Database
+DATABASE_URL=
 
-This template includes a theme toggle that persists the user's theme preference. The theme can be toggled using the sun/moon icon in the top-right corner.
+# Clerk
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
 
-## 🔒 Authentication
+# Groq
+GROQ_API_KEY=
 
-Protected routes are handled by the middleware, which checks for an active session before allowing access to protected routes. The protected routes are placed in the `(main)` directory.
+# E2B
+E2B_API_KEY=
 
-## 📝 License
+# Inngest
+INNGEST_EVENT_KEY=
+INNGEST_SIGNING_KEY=
+```
 
-This project is open source and available under the [MIT License](LICENSE).
+### Database Setup
 
-## 🙏 Acknowledgments
+```bash
+npx prisma generate
+npx prisma db push
+```
 
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Clerk Documentation](https://clerk.com/docs)
-- [Prisma Documentation](https://www.prisma.io/docs)
-- [shadcn/ui Documentation](https://ui.shadcn.com/docs)
+### Run Locally
+
+```bash
+# Start the Next.js dev server
+npm run dev
+
+# In a separate terminal, start the Inngest dev server
+npx inngest-cli@latest dev
+```
+
+The app will be available at `http://localhost:3000`.
+
+---
+
+## Architecture Overview
+
+The core workflow is fully asynchronous:
+
+```
+User submits resume form
+        │
+        ▼
+generateProjectAndCompileAction (Server Action)
+        │
+        ├── Inngest Step 1: Groq rewrites LaTeX → saved to DB
+        └── Inngest Step 2: E2B compiles LaTeX → PDF saved to DB
+                │
+                ▼
+Client polls checkProjectStatus → PDF rendered in editor
+```
+
+- **New projects** are seeded from pre-built templates on disk (`/templates/{name}/main.tex` + `main.pdf`).
+- **Authentication** is handled entirely by Clerk — no user data is stored in the application database.
+- **Project state** is tracked via a `status` field (`pending → Processing → Completed / Failed`).
+- **Backend logic** lives in Next.js Server Actions (`src/action.ts`) — no traditional REST API routes except `GET /api/get-project-pdf` for binary PDF serving.
+
+For full architecture documentation and data flow diagrams, see [`docs/architecture.md`](./docs/architecture.md).  
+For open issues and contribution opportunities, see [`docs/contribution.md`](./docs/contribution.md).
+
+---
+
+## Contributing
+
+Contributions are welcome. Please open an issue before submitting a pull request for significant changes. See [`docs/contribution.md`](./docs/contribution.md) for a list of known improvements and contribution guidelines.
+
+---
+
+## License
+
+MIT
