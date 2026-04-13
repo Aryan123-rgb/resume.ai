@@ -16,6 +16,22 @@ describe("GET /api/get-project-pdf", () => {
     vi.clearAllMocks();
   });
 
+  it("returns 400 when the projectId is missing or invalid", async () => {
+    // Missing projectId
+    const reqMissing = new NextRequest("http://localhost/api/get-project-pdf", {
+      method: "GET",
+    });
+    const resMissing = await GET(reqMissing);
+    expect(resMissing.status).toBe(400);
+
+    // Invalid projectId
+    const reqInvalid = new NextRequest("http://localhost/api/get-project-pdf?projectId=invalid-uuid", {
+      method: "GET",
+    });
+    const resInvalid = await GET(reqInvalid);
+    expect(resInvalid.status).toBe(400);
+  });
+
   it("returns 404 when the project or PDF is missing", async () => {
     vi.mocked(prismaClient.project.findUnique).mockResolvedValueOnce(null);
 

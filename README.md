@@ -1,24 +1,29 @@
-# resume.ai
+# Resume.AI
 
-An AI-powered resume builder that generates and compiles professional LaTeX resumes from structured user input — entirely in the browser.
+An AI-powered resume builder that generates and compiles professional LaTeX resumes from structured user input entirely in the browser. Both the compiled resume in pdf and latex can be downloaded
 
 ---
 
 ## What it does
 
-resume.ai lets you create a resume by filling out a form. Under the hood, a Groq LLM rewrites a LaTeX template using your data, compiles it to PDF inside a remote sandbox, and renders the result live in the editor — no local LaTeX installation required.
+Making a professional resume for your profile is always complicated task, not because of the latex code itself but also in finding the right template, so for solving that purpose I created a Resume.AI. An AI powered website which generates latex code using groq llm, compiles the latex code using a safe e2b sandbox environment and displays the pdf right in your browser. A mix of simple form builder and overleaf.
+
+On the first day of release it got **10+ active users**.
 
 ---
 
 ## Screenshots
 
 **Homepage**
+
 ![Homepage](./public/homepage.png)
 
 **Dashboard — browse & create projects**
+
 ![Dashboard](./public/dashboard.png)
 
 **Resume form editor**
+
 ![Form Editor](./public/formpage.png)
 
 ---
@@ -51,14 +56,14 @@ resume.ai lets you create a resume by filling out a form. Under the hood, a Groq
 ### Installation
 
 ```bash
-git clone https://github.com/your-username/resume.ai.git
+git clone https://github.com/distroaryan/resume.ai.git
 cd resume.ai
 npm install
 ```
 
 ### Environment Variables
 
-Create a `.env.local` file in the project root:
+Create a `.env.local` file in the project root and fill these variables with your own API Keys
 
 ```env
 # Database
@@ -74,9 +79,8 @@ GROQ_API_KEY=
 # E2B
 E2B_API_KEY=
 
-# Inngest
-INNGEST_EVENT_KEY=
-INNGEST_SIGNING_KEY=
+# Inngest (required for local configuration of Inngest environment)
+INNGEST_DEV=1
 ```
 
 ### Database Setup
@@ -124,17 +128,64 @@ Client polls checkProjectStatus → PDF rendered in editor
 - **Project state** is tracked via a `status` field (`pending → Processing → Completed / Failed`).
 - **Backend logic** lives in Next.js Server Actions (`src/action.ts`) — no traditional REST API routes except `GET /api/get-project-pdf` for binary PDF serving.
 
-For full architecture documentation and data flow diagrams, see [`docs/architecture.md`](./docs/architecture.md).  
-For open issues and contribution opportunities, see [`docs/contribution.md`](./docs/contribution.md).
+For full architecture documentation and data flow diagrams, see [`Architecture`](./docs/architecture.md).  
+For open issues and contribution opportunities, see [`Contribution`](./docs/contribution.md).
+
+---
+
+## Testing
+
+The project uses **[Vitest](https://vitest.dev/)** for unit testing. All external dependencies (Clerk, Prisma, Inngest, `fs`) are fully mocked so tests run in isolation — no real database or API keys required.
+
+### Test Files
+
+| File | What it tests |
+|------|---------------|
+| `src/action.test.ts` | All five server actions: auth guards, validation, happy paths |
+| `src/app/api/get-project-pdf/route.test.ts` | PDF route: missing/invalid UUID (400), not found (404), success (200) |
+
+### Running Tests
+
+```bash
+npm run test
+```
+
+Tests run in Node environment and complete in under 1 second.
+
+---
+
+## CI/CD Pipeline
+
+A GitHub Actions workflow (`.github/workflows/ci.yml`) runs automatically on every **push** and **pull request** to `main`.
+
+### What the pipeline does
+
+```
+Push / PR to main
+      │
+      ▼
+┌─────────────────────────────┐
+│  ubuntu-latest / Node 20    │
+│  1. npm ci                  │
+│  2. npm run lint            │
+│  3. npm run test            │
+└─────────────────────────────┘
+```
+
+### Key design decisions
+
+- **`npm ci`** (not `npm install`) is used to ensure a reproducible, lock-file-exact install on every run.
+- **Lint runs before tests** so style/type issues are caught first.
+- No environment secrets are needed — all dependencies are mocked in tests.
 
 ---
 
 ## Contributing
 
-Contributions are welcome. Please open an issue before submitting a pull request for significant changes. See [`docs/contribution.md`](./docs/contribution.md) for a list of known improvements and contribution guidelines.
+Contributions are welcome. Please open an issue before submitting a pull request for significant changes. See [`Contribution`](./docs/contribution.md) for a list of known improvements and contribution guidelines.
 
 ---
 
 ## License
 
-MIT
+This project is licensed under the [MIT License](./LICENSE).
